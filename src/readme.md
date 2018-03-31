@@ -1,2 +1,0 @@
-# TradeX
-Trade Server
