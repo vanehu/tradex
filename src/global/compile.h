@@ -31,6 +31,11 @@
 #define TRADEX_SHARES_EXP
 //#define TRADEX_SHARES_IMP
 
+//---------- 各类插件 ----------//
+
+#define TRADER_CTP_EXP
+//#define TRADER_CTP_IMP
+
 //---------- 设置结束 ----------//
 
 #ifdef TRADEX_GLOBAL_EXP
@@ -49,6 +54,16 @@
 
 #ifdef TRADEX_SHARES_IMP
     #define TRADEX_SHARES_EXPIMP __declspec(dllimport)
+#endif
+
+//------------------------------//
+
+#ifdef TRADER_CTP_EXP
+    #define TRADER_CTP_EXPIMP __declspec(dllexport)
+#endif
+
+#ifdef TRADER_CTP_IMP
+    #define TRADER_CTP_EXPIMP __declspec(dllimport)
 #endif
 
 //------------------------------//
