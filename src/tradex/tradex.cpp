@@ -32,6 +32,7 @@
 #pragma comment( lib, "shell32.lib" ) // Shell_NotifyIcon
 #pragma comment( lib, "netapi32.lib" ) // 获取 Mac 地址
 
+#include <common/assist.h>
 #include <common/common.h>
 #include <syslog/syslog.h>
 #include <syscfg/syscfg.h>
@@ -247,11 +248,7 @@ void SetConsoleWindow() {
 	// 更改窗体标题
 	std::string console_title;
 	FormatLibrary::StandardLibrary::FormatTo( console_title, "{0} {1}", DEF_APP_NAME, DEF_APP_VERSION );
-	int32_t number = MultiByteToWideChar( 0, 0, console_title.c_str(), -1, NULL, 0 );
-	wchar_t* temp_console_title = new wchar_t[number];
-	MultiByteToWideChar( 0, 0, console_title.c_str(), -1, temp_console_title, number );
-	SetConsoleTitle( temp_console_title ); // 修改 Console 窗口标题
-	delete[] temp_console_title;
+	SetConsoleTitle( basicx::StringToWideChar( console_title ).c_str() ); // 修改 Console 窗口标题
 }
 
 void SetSystemTrayIcon() {
