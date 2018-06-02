@@ -212,10 +212,10 @@ ENDIF ()
 
 IF (WIN32)
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configx")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configs")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/extdlls")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/pluginx")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/pluginx/trader_ctp")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib")
@@ -253,20 +253,20 @@ IF (WIN32)
 	)
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/../etc/cfg_basic.ini" 
-	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/configx"
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/configs"
 	)
     INSTALL (
 		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.dll" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
-	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/pluginx/trader_ctp"
+			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.ini" 
+			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.xml" 
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp"
 	)
 ELSEIF ((UNIX) OR (APPLE))
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configx")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configs")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/extdlls")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/pluginx")
-    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/pluginx/trader_ctp")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib")
@@ -308,14 +308,14 @@ ELSEIF ((UNIX) OR (APPLE))
 	)
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/../etc/cfg_basic.ini" 
-	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/configx" 
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/configs" 
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
 	)
     INSTALL (
 		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.so" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
-	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/pluginx/trader_ctp" 
+			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.ini" 
+			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.xml" 
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp" 
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
 	)
 ENDIF ()
