@@ -245,9 +245,11 @@ IF (WIN32)
 	)
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/../changes.md" 
+	          "${PROJECT_SOURCE_DIR}/../library.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license.txt" 
 	          "${PROJECT_SOURCE_DIR}/../license_bsd.txt" 
-	          "${PROJECT_SOURCE_DIR}/../license_chs.txt" 
-	          "${PROJECT_SOURCE_DIR}/../license_eng.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license_lgpl_chs.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license_lgpl_eng.txt" 
 	          "${PROJECT_SOURCE_DIR}/../readme.md" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/doc"
 	)
@@ -257,8 +259,8 @@ IF (WIN32)
 	)
     INSTALL (
 		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.dll" 
-			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.ini" 
-			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.xml" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp"
 	)
 ELSEIF ((UNIX) OR (APPLE))
@@ -299,9 +301,11 @@ ELSEIF ((UNIX) OR (APPLE))
 	)
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/../changes.md" 
+	          "${PROJECT_SOURCE_DIR}/../library.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license.txt" 
 	          "${PROJECT_SOURCE_DIR}/../license_bsd.txt" 
-	          "${PROJECT_SOURCE_DIR}/../license_chs.txt" 
-	          "${PROJECT_SOURCE_DIR}/../license_eng.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license_lgpl_chs.txt" 
+	          "${PROJECT_SOURCE_DIR}/../license_lgpl_eng.txt" 
 	          "${PROJECT_SOURCE_DIR}/../readme.md" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/doc" 
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
@@ -313,8 +317,8 @@ ELSEIF ((UNIX) OR (APPLE))
 	)
     INSTALL (
 		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.so" 
-			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.ini" 
-			  "${PROJECT_SOURCE_DIR}/plugins/trader_ctp/trader_ctp.xml" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp" 
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
 	)

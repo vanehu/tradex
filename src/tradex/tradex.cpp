@@ -81,7 +81,7 @@ void SystemUninitialize() { // 在控制台事件和单例限制退出时调用�
 	catch( ... ) {}
 }
 
-int __stdcall ConsoleHandler( unsigned long event ) { // 控制台事件检测
+int32_t __stdcall ConsoleHandler( unsigned long event ) { // 控制台事件检测
 	std::string log_cate = "<SYSTEM_EVENT>";
 	basicx::SysLog_S* syslog = basicx::SysLog_S::GetInstance();
 
@@ -331,7 +331,7 @@ bool SystemInitialize() {
 	return true;
 }
 
-int main( int argc, char* argv[] ) {
+int32_t main( int32_t argc, char* argv[] ) {
 	std::string log_info;
 	std::string log_cate = "<SYSTEM_MAIN>";
 	basicx::SysLog_S syslog_s( DEF_APP_NAME ); // 唯一实例 // 01
