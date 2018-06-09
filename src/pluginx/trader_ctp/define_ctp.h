@@ -26,13 +26,13 @@
 #include "../../global/define.h"
 
 // 插件定义
-#define PLUGIN_NAME_TRADER_CTP "TraderCTP" // 插件名称
-#define PLUGIN_NAME_CN_TRADER_CTP "上 期 期 货 交 易 插 件" // 插件中文名称
-#define PLUGIN_VERSION_TRADER_CTP "V0.1.0-Beta Build 20180407" // 插件版本号
+#define PLUGIN_NAME "trader_ctp" // 插件名称
+#define PLUGIN_NAME_CN "上 期 期 货 交 易 插 件" // 插件中文名称
+#define PLUGIN_VERSION "V0.1.0-Beta Build 20180407" // 插件版本号
 
 // 插件自定义消息
 
 // 插件自定义参数
-#define CFG_TRADER_CTP_WORK_THREAD_NUM 1 // 输入输出服务工作线程数
+#define CFG_WORK_THREAD_NUM 1 // 输入输出服务工作线程数
 
 #endif // TRADER_CTP_DEFINE_H

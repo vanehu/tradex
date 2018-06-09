@@ -215,6 +215,7 @@ IF (WIN32)
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configs")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/extdlls")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
@@ -240,6 +241,10 @@ IF (WIN32)
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/libinfo.txt" 
 		      "${PROJECT_SOURCE_DIR}/tradex/logo.ico" 
+		      "${SDKDIR_INTERFACE}/APE/FixApi.dll" 
+		      "${SDKDIR_INTERFACE}/APE/libeay32.dll" 
+		      "${SDKDIR_INTERFACE}/APE/msvcp60.dll" 
+		      "${SDKDIR_INTERFACE}/APE/ssleay32.dll" 
 		      "${SDKDIR_INTERFACE}/CTP_F/thosttraderapi.dll" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/extdlls"
 	)
@@ -257,17 +262,24 @@ IF (WIN32)
 	    FILES "${PROJECT_SOURCE_DIR}/../etc/cfg_basic.ini" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/configs"
 	)
-    INSTALL (
-		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.dll" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
-			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
-	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp"
-	)
+    #INSTALL (
+	#	FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ape.dll" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_ape/trader_ape.ini" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_ape/trader_ape.xml" 
+	#    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape"
+	#)
+    #INSTALL (
+	#	FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.dll" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
+	#    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp"
+	#)
 ELSEIF ((UNIX) OR (APPLE))
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configs")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/extdlls")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
@@ -295,6 +307,10 @@ ELSEIF ((UNIX) OR (APPLE))
     INSTALL (
 	    FILES "${PROJECT_SOURCE_DIR}/libinfo.txt" 
 		      "${PROJECT_SOURCE_DIR}/tradex/logo.ico" 
+		      "${SDKDIR_INTERFACE}/APE/FixApi.so" 
+		      "${SDKDIR_INTERFACE}/APE/libeay32.so" 
+		      "${SDKDIR_INTERFACE}/APE/msvcp60.so" 
+		      "${SDKDIR_INTERFACE}/APE/ssleay32.so" 
 		      "${SDKDIR_INTERFACE}/CTP_F/thosttraderapi.so" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/extdlls"
 		# PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE # 755

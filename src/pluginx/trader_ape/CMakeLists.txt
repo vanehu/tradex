@@ -19,7 +19,7 @@
 #
 # Be sure to retain the above copyright notice and conditions.
 
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS} "${PROJECT_SOURCE_DIR}" "${SDKDIR_BASICX_INCLUDE}" "${SDKDIR_JSONCPP_INCLUDE}" "${SDKDIR_INTERFACE}/CTP_F")
+INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS} "${PROJECT_SOURCE_DIR}" "${SDKDIR_BASICX_INCLUDE}" "${SDKDIR_JSONCPP_INCLUDE}" "${SDKDIR_INTERFACE}/APE")
 
 # Boost 的附加库目录会自动添加
 IF (CMAKE_LINKTYPE_SHARED) # 插件仅限动态链接模式
@@ -30,8 +30,8 @@ IF (CMAKE_LINKTYPE_SHARED) # 插件仅限动态链接模式
         SET (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LIBPATH:\"${SDKDIR_BASICX_LIBRARY_RELEASE}\"")
 		SET (CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /LIBPATH:\"${SDKDIR_JSONCPP_LIBRARY_DEBUG}\"")
         SET (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LIBPATH:\"${SDKDIR_JSONCPP_LIBRARY_RELEASE}\"")
-		SET (CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /LIBPATH:\"${SDKDIR_INTERFACE}/CTP_F\"")
-        SET (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LIBPATH:\"${SDKDIR_INTERFACE}/CTP_F\"")
+		SET (CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /LIBPATH:\"${SDKDIR_INTERFACE}/APE\"")
+        SET (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LIBPATH:\"${SDKDIR_INTERFACE}/APE\"")
     ELSE ()
         LINK_DIRECTORIES (${PROJECT_BINARY_DIR}/archive) # need check
 		LINK_DIRECTORIES (${PROJECT_BINARY_DIR}/archive) # need check
@@ -47,12 +47,12 @@ SOURCE_GROUP ("Header Files" FILES ${PLUGIN_HEADER_FILES})
 SOURCE_GROUP ("Source Files" FILES ${PLUGIN_SOURCE_FILES})
 
 IF (CMAKE_LINKTYPE_SHARED) # 插件仅限动态链接模式
-    ADD_LIBRARY ("trader_ctp" SHARED ${PLUGIN_HEADER_FILES} ${PLUGIN_SOURCE_FILES})
+    ADD_LIBRARY ("trader_ape" SHARED ${PLUGIN_HEADER_FILES} ${PLUGIN_SOURCE_FILES})
     IF (WIN32)
-        TARGET_LINK_LIBRARIES ("trader_ctp" common.lib syslog.lib syscfg.lib sysrtm.lib network.lib plugins.lib json_vc71_libmt.lib thosttraderapi.lib)
+        TARGET_LINK_LIBRARIES ("trader_ape" common.lib syslog.lib syscfg.lib sysrtm.lib network.lib plugins.lib json_vc71_libmt.lib FixApi.lib)
     ELSEIF (UNIX)
-        TARGET_LINK_LIBRARIES ("trader_ctp" common.a syslog.a syscfg.a sysrtm.a network.a plugins.a json_vc71_libmt.a thosttraderapi.a)
+        TARGET_LINK_LIBRARIES ("trader_ape" common.a syslog.a syscfg.a sysrtm.a network.a plugins.a json_vc71_libmt.a FixApi.a)
     ELSEIF (APPLE)
-        TARGET_LINK_LIBRARIES ("trader_ctp" common.a syslog.a syscfg.a sysrtm.a network.a plugins.a json_vc71_libmt.a thosttraderapi.a)
+        TARGET_LINK_LIBRARIES ("trader_ape" common.a syslog.a syscfg.a sysrtm.a network.a plugins.a json_vc71_libmt.a FixApi.a)
     ENDIF ()
 ENDIF ()

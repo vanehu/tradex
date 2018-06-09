@@ -33,6 +33,9 @@
 
 //---------- ¸÷Àà²å¼þ ----------//
 
+#define TRADER_APE_EXP
+//#define TRADER_APE_IMP
+
 #define TRADER_CTP_EXP
 //#define TRADER_CTP_IMP
 
@@ -54,6 +57,16 @@
 
 #ifdef TRADEX_SHARES_IMP
     #define TRADEX_SHARES_EXPIMP __declspec(dllimport)
+#endif
+
+//------------------------------//
+
+#ifdef TRADER_APE_EXP
+    #define TRADER_APE_EXPIMP __declspec(dllexport)
+#endif
+
+#ifdef TRADER_APE_IMP
+    #define TRADER_APE_EXPIMP __declspec(dllimport)
 #endif
 
 //------------------------------//

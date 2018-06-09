@@ -1,1 +1,5 @@
+FixApi.dll            -->  APE
+libeay32.dll          -->  APE
+msvcp60.dll           -->  APE
+ssleay32.dll          -->  APE
 thosttraderapi.dll    -->  CTP

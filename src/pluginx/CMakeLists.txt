@@ -19,4 +19,5 @@
 #
 # Be sure to retain the above copyright notice and conditions.
 
+ADD_SUBDIRECTORY ("${PROJECT_SOURCE_DIR}/pluginx/trader_ape")
 ADD_SUBDIRECTORY ("${PROJECT_SOURCE_DIR}/pluginx/trader_ctp")
