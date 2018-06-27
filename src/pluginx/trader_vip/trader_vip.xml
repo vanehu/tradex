@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="GB2312" standalone="no" ?>
-<Plugin Name="trader_ape" Version="1.0.0" CompatVersion="1.0.0" Experimental="False">
+<Plugin Name="trader_vip" Version="1.0.0" CompatVersion="1.0.0" Experimental="False">
     <Vendor>X-Lab</Vendor>
     <Copyright>Copyright 2018-2018 X-Lab All Rights Reserved</Copyright>
     <License>Commercial Usage And GNU Lesser General Public License Usage</License>
     <Category>扩展</Category>
-    <Description>顶点普通股票交易插件</Description>
+    <Description>顶点快速股票交易插件</Description>
     <Url>http://www.xlab.com</Url>
     <DependencyList>
     </DependencyList>
