@@ -217,6 +217,7 @@ IF (WIN32)
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_vip")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib")
@@ -246,6 +247,10 @@ IF (WIN32)
 		      "${SDKDIR_INTERFACE}/APE/msvcp60.dll" 
 		      "${SDKDIR_INTERFACE}/APE/ssleay32.dll" 
 		      "${SDKDIR_INTERFACE}/CTP_F/thosttraderapi.dll" 
+#		      "${SDKDIR_INTERFACE}/VIP/FixApi.dll" 
+#		      "${SDKDIR_INTERFACE}/VIP/libeay32.dll" 
+#		      "${SDKDIR_INTERFACE}/VIP/msvcp60.dll" 
+#		      "${SDKDIR_INTERFACE}/VIP/ssleay32.dll" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/extdlls"
 	)
     INSTALL (
@@ -274,6 +279,12 @@ IF (WIN32)
 	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
 	#    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp"
 	#)
+    #INSTALL (
+	#	FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_vip.dll" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_vip/trader_vip.ini" 
+	#		  "${PROJECT_SOURCE_DIR}/pluginx/trader_vip/trader_vip.xml" 
+	#    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_vip"
+	#)
 ELSEIF ((UNIX) OR (APPLE))
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/configs")
@@ -281,6 +292,7 @@ ELSEIF ((UNIX) OR (APPLE))
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape")
     FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp")
+    FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_vip")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/doc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/etc")
 	FILE (MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib")
@@ -312,6 +324,10 @@ ELSEIF ((UNIX) OR (APPLE))
 		      "${SDKDIR_INTERFACE}/APE/msvcp60.so" 
 		      "${SDKDIR_INTERFACE}/APE/ssleay32.so" 
 		      "${SDKDIR_INTERFACE}/CTP_F/thosttraderapi.so" 
+#		      "${SDKDIR_INTERFACE}/VIP/FixApi.so" 
+#		      "${SDKDIR_INTERFACE}/VIP/libeay32.so" 
+#		      "${SDKDIR_INTERFACE}/VIP/msvcp60.so" 
+#		      "${SDKDIR_INTERFACE}/VIP/ssleay32.so" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/extdlls"
 		# PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE # 755
 	)
@@ -332,10 +348,24 @@ ELSEIF ((UNIX) OR (APPLE))
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
 	)
     INSTALL (
+		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ape.so" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ape/trader_ape.ini" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ape/trader_ape.xml" 
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ape" 
+		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
+	)
+    INSTALL (
 		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_ctp.so" 
 			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.ini" 
 			  "${PROJECT_SOURCE_DIR}/pluginx/trader_ctp/trader_ctp.xml" 
 	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_ctp" 
+		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
+	)
+    INSTALL (
+		FILES "${PROJECT_BINARY_DIR}/runtime/${PATH_FLAG_COMPILE}/trader_vip.so" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_vip/trader_vip.ini" 
+			  "${PROJECT_SOURCE_DIR}/pluginx/trader_vip/trader_vip.xml" 
+	    DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/plugins/trader_vip" 
 		# PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ # 644
 	)
 ENDIF ()

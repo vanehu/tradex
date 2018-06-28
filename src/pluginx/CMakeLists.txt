@@ -21,3 +21,4 @@
 
 ADD_SUBDIRECTORY ("${PROJECT_SOURCE_DIR}/pluginx/trader_ape")
 ADD_SUBDIRECTORY ("${PROJECT_SOURCE_DIR}/pluginx/trader_ctp")
+ADD_SUBDIRECTORY ("${PROJECT_SOURCE_DIR}/pluginx/trader_vip")

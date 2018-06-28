@@ -39,6 +39,9 @@
 #define TRADER_CTP_EXP
 //#define TRADER_CTP_IMP
 
+#define TRADER_VIP_EXP
+//#define TRADER_VIP_IMP
+
 //---------- …Ë÷√Ω· ¯ ----------//
 
 #ifdef TRADEX_GLOBAL_EXP
@@ -77,6 +80,16 @@
 
 #ifdef TRADER_CTP_IMP
     #define TRADER_CTP_EXPIMP __declspec(dllimport)
+#endif
+
+//------------------------------//
+
+#ifdef TRADER_VIP_EXP
+    #define TRADER_VIP_EXPIMP __declspec(dllexport)
+#endif
+
+#ifdef TRADER_VIP_IMP
+    #define TRADER_VIP_EXPIMP __declspec(dllimport)
 #endif
 
 //------------------------------//
