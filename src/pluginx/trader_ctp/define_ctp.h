@@ -20,8 +20,8 @@
 * Be sure to retain the above copyright notice and conditions.
 */
 
-#ifndef TRADER_CTP_DEFINE_H
-#define TRADER_CTP_DEFINE_H
+#ifndef TRADER_CTP_DEFINE_CTP_H
+#define TRADER_CTP_DEFINE_CTP_H
 
 #include "../../global/define.h"
 
@@ -35,4 +35,4 @@
 // 插件自定义参数
 #define CFG_WORK_THREAD_NUM 1 // 输入输出服务工作线程数
 
-#endif // TRADER_CTP_DEFINE_H
+#endif // TRADER_CTP_DEFINE_CTP_H

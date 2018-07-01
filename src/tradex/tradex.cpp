@@ -78,7 +78,8 @@ void SystemUninitialize() { // 在控制台事件和单例限制退出时调用�
 			syslog->~SysLog_S();
 		}
 	} // try
-	catch( ... ) {}
+	catch( ... ) {
+	}
 }
 
 int32_t __stdcall ConsoleHandler( unsigned long event ) { // 控制台事件检测

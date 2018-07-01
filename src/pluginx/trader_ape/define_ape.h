@@ -20,8 +20,8 @@
 * Be sure to retain the above copyright notice and conditions.
 */
 
-#ifndef TRADER_APE_DEFINE_H
-#define TRADER_APE_DEFINE_H
+#ifndef TRADER_APE_DEFINE_APE_H
+#define TRADER_APE_DEFINE_APE_H
 
 #include "../../global/define.h"
 
@@ -35,4 +35,4 @@
 // 插件自定义参数
 #define CFG_WORK_THREAD_NUM 1 // 输入输出服务工作线程数
 
-#endif // TRADER_APE_DEFINE_H
+#endif // TRADER_APE_DEFINE_APE_H

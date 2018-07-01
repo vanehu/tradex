@@ -38,17 +38,17 @@ public:
 	~TraderAPE();
 
 public:
-	virtual bool Initialize();
-	virtual bool InitializeExt();
-	virtual bool StartPlugin();
-	virtual bool IsPluginRun();
-	virtual bool StopPlugin();
-	virtual bool UninitializeExt();
-	virtual bool Uninitialize();
-	virtual bool AssignTask( int32_t task_id, int32_t identity, int32_t code, std::string& data );
+	virtual bool Initialize() override;
+	virtual bool InitializeExt() override;
+	virtual bool StartPlugin() override;
+	virtual bool IsPluginRun() override;
+	virtual bool StopPlugin() override;
+	virtual bool UninitializeExt() override;
+	virtual bool Uninitialize() override;
+	virtual bool AssignTask( int32_t task_id, int32_t identity, int32_t code, std::string& data ) override;
 
 private:
-	TraderAPE_P* m_p;
+	TraderAPE_P* m_trader_ape_p;
 
 // 自定义成员函数和变量
 
