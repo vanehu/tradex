@@ -1,0 +1,247 @@
+/*
+* Copyright (c) 2018-2018 the TradeX authors
+* All rights reserved.
+*
+* The project sponsor and lead author is Xu Rendong.
+* E-mail: xrd@ustc.edu, QQ: 277195007, WeChat: ustc_xrd
+* You can get more information at https://xurendong.github.io
+* For names of other contributors see the contributors file.
+*
+* Commercial use of this code in source and binary forms is
+* governed by a LGPL v3 license. You may get a copy from the
+* root directory. Or else you should get a specific written
+* permission from the project author.
+*
+* Individual and educational use of this code in source and
+* binary forms is governed by a 3-clause BSD license. You may
+* get a copy from the root directory. Certainly welcome you
+* to contribute code of all sorts.
+*
+* Be sure to retain the above copyright notice and conditions.
+*/
+
+#include "set_field_ape.h"
+
+SetField::SetField() {
+	m_syslog = basicx::SysLog_S::GetInstance();
+
+	m_map_set_field_func[120001] = &SetField::SetField_120001_620001;
+	m_map_set_field_func[120002] = &SetField::SetField_120002_620021;
+	m_map_set_field_func[120003] = &SetField::SetField_120003_620002;
+	m_map_set_field_func[120004] = &SetField::SetField_120004_620022;
+	m_map_set_field_func[130002] = &SetField::SetField_130002_630002;
+	m_map_set_field_func[130004] = &SetField::SetField_130004_630004;
+	m_map_set_field_func[130005] = &SetField::SetField_130005_630005;
+	m_map_set_field_func[130006] = &SetField::SetField_130006_630006;
+	m_map_set_field_func[130008] = &SetField::SetField_130008_601410;
+	m_map_set_field_func[130009] = &SetField::SetField_130009_601411;
+}
+
+SetField::~SetField() {
+}
+
+bool SetField::SetField_120001_620001( int64_t api_session, Request* request ) { // 单个委托下单
+	try {
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetString( api_session, 571, request->m_req_json["holder"].asCString() ); // FID_GDH 股东号 Char 10
+			Fix_SetString( api_session, 719, request->m_req_json["symbol"].asCString() ); // FID_ZQDM 证券代码 Char 6
+			std::string exchange = request->m_req_json["exchange"].asCString();
+			Fix_SetString( api_session, 599, exchange.c_str() ); // FID_JYS 交易所编码 Char 2
+			int64_t entr_type = 0; // 29申购、30赎回、37质入、38质出
+			double price = 0.0; // 29申购、30赎回、37质入、38质出
+			int exch_side = request->m_req_json["exch_side"].asInt();
+			if( 1 == exch_side || 2 == exch_side ) { // 1买入、2卖出
+				entr_type = request->m_req_json["entr_type"].asInt();
+				if( 1 == entr_type ) { // 限价
+					entr_type = 0; // 顶点上证和深证均为 0 限价
+				}
+				else if( 2 == entr_type && "SH" == exchange ) { // 市价
+					entr_type = 1; // 顶点上证为 1 市价
+				}
+				else if( 2 == entr_type && "SZ" == exchange ) { // 市价
+					entr_type = 104; // 顶点深证为 104 市价
+				}
+				else {
+					return false;
+				}
+				price = request->m_req_json["price"].asDouble();
+			}
+			Fix_SetLong( api_session, 1013, entr_type ); // FID_DDLX 订单类型 Int
+			Fix_SetLong( api_session, 683, exch_side ); // FID_WTLB 委托类别 Int
+			Fix_SetDouble( api_session, 682, price ); // FID_WTJG 委托价格 Numric 9,3
+			Fix_SetLong( api_session, 684, request->m_req_json["amount"].asInt() ); // FID_WTSL 委托数量 Int
+			// FID_WTPCH 委托批次号 Int
+			// FID_DFXW 对方席位号 Char 6
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_120002_620021( int64_t api_session, Request* request ) { // 单个委托撤单
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 原委托号 Int
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_120003_620002( int64_t api_session, Request* request ) { // 批量委托下单
+	try {
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetLong( api_session, 788, request->m_req_json["order_numb"].asInt() ); // FID_COUNT 委托笔数 Int
+			Fix_SetString( api_session, 922, request->m_req_json["order_list"].asCString() ); // FID_FJXX 委托详细信息 Char 15000
+			// FID_WTPCH 委托批次号 Int
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_120004_620022( int64_t api_session, Request* request ) { // 批量委托撤单
+	try {
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetLong( api_session, 1017, request->m_req_json["batch_id"].asInt() ); // FID_WTPCH 委托批次号 Int
+			Fix_SetString( api_session, 705, request->m_req_json["batch_ht"].asCString() ); // FID_EN_WTH 撤单委托号范围 Char 6000
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130002_630002( int64_t api_session, Request* request ) { // 查询客户资金
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130004_630004( int64_t api_session, Request* request ) { // 查询客户持仓
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+
+			// FID_GDH 股东号 Char 10
+			// FID_JYS 交易所编码 Char 2
+			// FID_ZQDM 证券代码 Char 6
+			// FID_EXFLG 查询扩展信息标志 Int
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130005_630005( int64_t api_session, Request* request ) { // 查询客户当日委托
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 委托号 Int
+			Fix_SetString( api_session, 763, request->m_req_json["brow_index"].asCString() ); // FID_BROWINDEX 增量查询索引值 Char 128
+			// FID_GDH 股东号 Char 10
+			// FID_JYS 交易所编码 Char 2
+			// FID_WTLB 委托类别 Int
+			// FID_ZQDM 证券代码 Char 6
+			// FID_WTPCH 委托批次号 Int
+			// FID_FLAG 查询标志（0 所有委托，1 可撤单委托）Int
+			// FID_CXBZ 撤销标志 Char 1
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130006_630006( int64_t api_session, Request* request ) { // 查询客户当日成交
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			// FID_KHH 客户号 Char 20 // 已填充
+			// FID_JYMM 交易密码 Char 16 // 已填充
+			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 委托号 Int
+			Fix_SetString( api_session, 763, request->m_req_json["brow_index"].asCString() ); // FID_BROWINDEX 增量查询索引值 Char 128
+			// FID_GDH 股东号 Char 10
+			// FID_JYS 交易所编码 Char 2
+			// FID_WTLB 委托类别 Int
+			// FID_ZQDM 证券代码 Char 6
+			// FID_WTPCH 委托批次号 Int
+			// FID_FLAG 查询标志（0 所有委托，1 可撤单委托）Int
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130008_601410( int64_t api_session, Request* request ) { // 查询ETF基本信息
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			Fix_SetString( api_session, 9129, request->m_req_json["fund_id_2"].asCString() ); // FID_JJDM 基金代码 Char 6
+			// FID_JYS 交易所 Char 2
+			// FID_SGDM ETF申赎代码 Char 6
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
+
+bool SetField::SetField_130009_601411( int64_t api_session, Request* request ) { // 查询ETF成分股信息
+	try {
+		std::string field_value = "";
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			Fix_SetString( api_session, 9129, request->m_req_json["fund_id_2"].asCString() ); // FID_JJDM 基金代码 Char 6
+			// FID_JYS 交易所 Char 2
+			// FID_TYPE 基金类型 Char 2
+			return true;
+		}
+	}
+	catch( ... ) {
+		return false;
+	}
+	return false;
+}
