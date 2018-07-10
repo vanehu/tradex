@@ -36,23 +36,23 @@ public:
 	~GetField();
 
 public:
-	typedef bool (GetField::*GetFieldFunc)( int64_t api_session, Request* request, std::string& results );
+	typedef bool (GetField::*GetFieldFunc)( int32_t api_session, Request* request, std::string& results );
 
-	void FillHead( Json::Value& results_json, int32_t ret_func, int64_t ret_numb, Request* request );
-	void FillHeadQuery( Json::Value& results_json, int32_t ret_func, int64_t ret_numb, Request* request );
-	bool GetField_120001_620001( int64_t api_session, Request* request, std::string& results ); // 单个委托下单
-	bool GetField_120002_620021( int64_t api_session, Request* request, std::string& results ); // 单个委托撤单
-	bool GetField_120003_620002( int64_t api_session, Request* request, std::string& results ); // 批量委托下单
-	bool GetField_120004_620022( int64_t api_session, Request* request, std::string& results ); // 批量委托撤单
-	bool GetField_130002_630002( int64_t api_session, Request* request, std::string& results ); // 查询客户资金
-	bool GetField_130004_630004( int64_t api_session, Request* request, std::string& results ); // 查询客户持仓
-	bool GetField_130005_630005( int64_t api_session, Request* request, std::string& results ); // 查询客户当日委托
-	bool GetField_130006_630006( int64_t api_session, Request* request, std::string& results ); // 查询客户当日成交
-	bool GetField_130008_601410( int64_t api_session, Request* request, std::string& results ); // 查询ETF基本信息
-	bool GetField_130009_601411( int64_t api_session, Request* request, std::string& results ); // 查询ETF成分股信息
-	bool GetField_190001_100065( int64_t api_session, Request* request, std::string& results ); // 申报回报
-	bool GetField_190002_100064( int64_t api_session, Request* request, std::string& results ); // 成交回报
-	bool GetField_190003_100066( int64_t api_session, Request* request, std::string& results ); // 撤单回报
+	void FillHead( Json::Value& results_json, int32_t ret_func, int32_t ret_numb, Request* request );
+	void FillHeadQuery( Json::Value& results_json, int32_t ret_func, int32_t ret_numb, Request* request );
+	bool GetField_120001_620001( int32_t api_session, Request* request, std::string& results ); // 单个委托下单
+	bool GetField_120002_620021( int32_t api_session, Request* request, std::string& results ); // 单个委托撤单
+	bool GetField_120003_620002( int32_t api_session, Request* request, std::string& results ); // 批量委托下单
+	bool GetField_120004_620022( int32_t api_session, Request* request, std::string& results ); // 批量委托撤单
+	bool GetField_130002_630002( int32_t api_session, Request* request, std::string& results ); // 查询客户资金
+	bool GetField_130004_630004( int32_t api_session, Request* request, std::string& results ); // 查询客户持仓
+	bool GetField_130005_630005( int32_t api_session, Request* request, std::string& results ); // 查询客户当日委托
+	bool GetField_130006_630006( int32_t api_session, Request* request, std::string& results ); // 查询客户当日成交
+	bool GetField_130008_601410( int32_t api_session, Request* request, std::string& results ); // 查询ETF基本信息
+	bool GetField_130009_601411( int32_t api_session, Request* request, std::string& results ); // 查询ETF成分股信息
+	bool GetField_190001_100065( int32_t api_session, Request* request, std::string& results ); // 申报回报
+	bool GetField_190002_100064( int32_t api_session, Request* request, std::string& results ); // 成交回报
+	bool GetField_190003_100066( int32_t api_session, Request* request, std::string& results ); // 撤单回报
 
 public:
 	basicx::SysLog_S* m_syslog;

@@ -43,7 +43,7 @@ GetField::GetField() {
 GetField::~GetField() {
 }
 
-void GetField::FillHead( Json::Value& results_json, int32_t ret_func, int64_t ret_numb, Request* request ) {
+void GetField::FillHead( Json::Value& results_json, int32_t ret_func, int32_t ret_numb, Request* request ) {
 	results_json["ret_func"] = ret_func;
 	results_json["ret_code"] = 0;
 	results_json["ret_info"] = basicx::StringToUTF8( "业务提交成功。" );
@@ -53,7 +53,7 @@ void GetField::FillHead( Json::Value& results_json, int32_t ret_func, int64_t re
 	//results_json["ret_data"] = "";
 }
 
-void GetField::FillHeadQuery( Json::Value& results_json, int32_t ret_func, int64_t ret_numb, Request* request ) {
+void GetField::FillHeadQuery( Json::Value& results_json, int32_t ret_func, int32_t ret_numb, Request* request ) {
 	results_json["ret_func"] = ret_func;
 	results_json["ret_code"] = 0;
 	if( ret_numb > 0 ) {
@@ -68,13 +68,13 @@ void GetField::FillHeadQuery( Json::Value& results_json, int32_t ret_func, int64
 	//results_json["ret_data"] = "";
 }
 
-bool GetField::GetField_120001_620001( int64_t api_session, Request* request, std::string& results ) { // 单个委托下单
+bool GetField::GetField_120001_620001( int32_t api_session, Request* request, std::string& results ) { // 单个委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHead( results_json, 120001, ret_numb, request ); // 120001 // FillHead
-			int64_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -94,13 +94,13 @@ bool GetField::GetField_120001_620001( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120002_620021( int64_t api_session, Request* request, std::string& results ) { // 单个委托撤单
+bool GetField::GetField_120002_620021( int32_t api_session, Request* request, std::string& results ) { // 单个委托撤单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHead( results_json, 120002, ret_numb, request ); // 120002 // FillHead
-			int64_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -119,13 +119,13 @@ bool GetField::GetField_120002_620021( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120003_620002( int64_t api_session, Request* request, std::string& results ) { // 批量委托下单
+bool GetField::GetField_120003_620002( int32_t api_session, Request* request, std::string& results ) { // 批量委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHead( results_json, 120003, ret_numb, request ); // 120003 // FillHead
-			int64_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -146,13 +146,13 @@ bool GetField::GetField_120003_620002( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120004_620022( int64_t api_session, Request* request, std::string& results ) { // 批量委托撤单
+bool GetField::GetField_120004_620022( int32_t api_session, Request* request, std::string& results ) { // 批量委托撤单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHead( results_json, 120004, ret_numb, request ); // 120004 // FillHead
-			int64_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -170,13 +170,13 @@ bool GetField::GetField_120004_620022( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130002_630002( int64_t api_session, Request* request, std::string& results ) { // 查询客户资金
+bool GetField::GetField_130002_630002( int32_t api_session, Request* request, std::string& results ) { // 查询客户资金
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130002, ret_numb, request ); // 130002 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -204,13 +204,13 @@ bool GetField::GetField_130002_630002( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130004_630004( int64_t api_session, Request* request, std::string& results ) { // 查询客户持仓
+bool GetField::GetField_130004_630004( int32_t api_session, Request* request, std::string& results ) { // 查询客户持仓
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130004, ret_numb, request ); // 130004 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -281,13 +281,13 @@ bool GetField::GetField_130004_630004( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130005_630005( int64_t api_session, Request* request, std::string& results ) { // 查询客户当日委托
+bool GetField::GetField_130005_630005( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日委托
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130005, ret_numb, request ); // 130005 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -363,13 +363,13 @@ bool GetField::GetField_130005_630005( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130006_630006( int64_t api_session, Request* request, std::string& results ) { // 查询客户当日成交
+bool GetField::GetField_130006_630006( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日成交
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130006, ret_numb, request ); // 130006 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -418,13 +418,13 @@ bool GetField::GetField_130006_630006( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130008_601410( int64_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息
+bool GetField::GetField_130008_601410( int32_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130008, ret_numb, request ); // 130008 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -465,13 +465,13 @@ bool GetField::GetField_130008_601410( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130009_601411( int64_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息
+bool GetField::GetField_130009_601411( int32_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
-			int64_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
 			FillHeadQuery( results_json, 130009, ret_numb, request ); // 130009 // FillHeadQuery
-			int64_t i = 0; // 查询，业务失败则不取结果数据
+			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, 507, i ); // FID_CODE 返回码 Int
@@ -501,7 +501,7 @@ bool GetField::GetField_130009_601411( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_190001_100065( int64_t api_session, Request* request, std::string& results ) { // 申报回报
+bool GetField::GetField_190001_100065( int32_t api_session, Request* request, std::string& results ) { // 申报回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
 		results_json["ret_func"] = 190001;
@@ -532,7 +532,7 @@ bool GetField::GetField_190001_100065( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_190002_100064( int64_t api_session, Request* request, std::string& results ) { // 成交回报
+bool GetField::GetField_190002_100064( int32_t api_session, Request* request, std::string& results ) { // 成交回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
 		results_json["ret_func"] = 190002;
@@ -568,7 +568,7 @@ bool GetField::GetField_190002_100064( int64_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_190003_100066( int64_t api_session, Request* request, std::string& results ) { // 撤单回报
+bool GetField::GetField_190003_100066( int32_t api_session, Request* request, std::string& results ) { // 撤单回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
 		results_json["ret_func"] = 190003;
