@@ -110,8 +110,11 @@ public:
 	std::string OnErrorResult( int32_t func_id, int32_t ret_code, std::string ret_info, int32_t ret_task, int32_t encode );
 
 private:
-	Json::Reader m_json_reader;
-	Json::FastWriter m_json_writer;
+	Json::CharReader* m_json_reader_trader;
+	Json::CharReader* m_json_reader_risker;
+	Json::CharReaderBuilder m_json_reader_builder;
+	Json::StreamWriterBuilder m_json_writer_trader;
+	Json::StreamWriterBuilder m_json_writer_risker;
 
 	net_server_ptr m_net_server_trade;
 	net_client_ptr m_net_client_risks;

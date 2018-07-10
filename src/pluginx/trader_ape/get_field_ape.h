@@ -56,10 +56,10 @@ public:
 
 public:
 	basicx::SysLog_S* m_syslog;
-	Json::FastWriter m_json_writer;
-	Json::FastWriter m_json_writer_sb; // 预防多线程
-	Json::FastWriter m_json_writer_cj; // 预防多线程
-	Json::FastWriter m_json_writer_cd; // 预防多线程
+	Json::StreamWriterBuilder m_json_writer;
+	Json::StreamWriterBuilder m_json_writer_sb; // 预防多线程
+	Json::StreamWriterBuilder m_json_writer_cj; // 预防多线程
+	Json::StreamWriterBuilder m_json_writer_cd; // 预防多线程
 	char m_field_value_short[FIELD_VALUE_SHORT];
 	char m_field_value_long[FIELD_VALUE_LONG];
 	char m_field_value_huge[FIELD_VALUE_HUGE];

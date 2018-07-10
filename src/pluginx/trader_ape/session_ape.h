@@ -93,7 +93,7 @@ public:
 	long m_fid_code;
 	char m_fid_message[APE_FID_MESSAGE_LENGTH];
 
-	Json::FastWriter m_json_writer;
+	Json::StreamWriterBuilder m_json_writer;
 
 	SetField m_set_field;
 	GetField m_get_field;

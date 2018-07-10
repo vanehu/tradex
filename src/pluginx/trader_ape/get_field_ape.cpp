@@ -84,7 +84,7 @@ bool GetField::GetField_120001_620001( int32_t api_session, Request* request, st
 				// FID_WTPCH 委托批次号 Int
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -109,7 +109,7 @@ bool GetField::GetField_120002_620021( int32_t api_session, Request* request, st
 				ret_data_json["order_id"] = Fix_GetLong( api_session, 681, i ); // FID_WTH 委托号(撤单) Int
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -136,7 +136,7 @@ bool GetField::GetField_120003_620002( int32_t api_session, Request* request, st
 				// FID_COUNT 委托成功笔数 Int
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -160,7 +160,7 @@ bool GetField::GetField_120004_620022( int32_t api_session, Request* request, st
 				ret_data_json["otc_info"] = Fix_GetItem( api_session, 508, m_field_value_short, FIELD_VALUE_SHORT, i ); // FID_MESSAGE 返回说明 Char 255
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -194,7 +194,7 @@ bool GetField::GetField_130002_630002( int32_t api_session, Request* request, st
 				// FID_JGDM  机构代码  Char    4
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -271,7 +271,7 @@ bool GetField::GetField_130004_630004( int32_t api_session, Request* request, st
 				// FID_LXBJ      利息报价          Numric  16,9
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -353,7 +353,7 @@ bool GetField::GetField_130005_630005( int32_t api_session, Request* request, st
 				// FID_ADDR_MAC  MAC 地址        Char  12
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -408,7 +408,7 @@ bool GetField::GetField_130006_630006( int32_t api_session, Request* request, st
 				// FID_LX     利息        Numric  16,2
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -455,7 +455,7 @@ bool GetField::GetField_130008_601410( int32_t api_session, Request* request, st
 				// FID_WJLJ    文件路径              Char 255
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -491,7 +491,7 @@ bool GetField::GetField_130009_601411( int32_t api_session, Request* request, st
 				ret_data_json["up_px_ratio"] = Fix_GetDouble( api_session, 1603, i ); // FID_YJBL 溢价比例  Numeric 16,2
 				results_json["ret_data"].append( ret_data_json );
 			}
-			results = m_json_writer.write( results_json );
+			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
 	}
@@ -523,7 +523,7 @@ bool GetField::GetField_190001_100065( int32_t api_session, Request* request, st
 		// FID_BZ     币种            Char     3
 		// FID_CXBZ   撤销标志        Char     1
 		// FID_DJZJ   冻结资金        Numeric  16,2
-		results = m_json_writer_sb.write( results_json );
+		results = Json::writeString( m_json_writer_sb, results_json );
 		return true;
 	}
 	catch( ... ) {
@@ -559,7 +559,7 @@ bool GetField::GetField_190002_100064( int32_t api_session, Request* request, st
 		// FID_ZCJSL  委托总成交数量  Int
 		// FID_ZCJJE  委托总成交金额  Numeric  16,2
 		// FID_CJJE   本次成交金额    Numeric  16,2
-		results = m_json_writer_cj.write( results_json );
+		results = Json::writeString( m_json_writer_cj, results_json );
 		return true;
 	}
 	catch( ... ) {
@@ -587,7 +587,7 @@ bool GetField::GetField_190003_100066( int32_t api_session, Request* request, st
 		// FID_BZ     币种            Char     3
 		// FID_CXBZ   撤销标志        Char     1
 		// FID_DJZJ   冻结资金        Numeric  16,2
-		results = m_json_writer_cd.write( results_json );
+		results = Json::writeString( m_json_writer_cd, results_json );
 		return true;
 	}
 	catch( ... ) {
