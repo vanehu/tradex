@@ -63,6 +63,9 @@ public:
 	char m_field_value_short[FIELD_VALUE_SHORT];
 	char m_field_value_long[FIELD_VALUE_LONG];
 	char m_field_value_huge[FIELD_VALUE_HUGE];
+	char m_field_value_short_sb[FIELD_VALUE_SHORT]; // 预防多线程
+	char m_field_value_short_cj[FIELD_VALUE_SHORT]; // 预防多线程
+	char m_field_value_short_cd[FIELD_VALUE_SHORT]; // 预防多线程
 	std::unordered_map<int32_t, GetFieldFunc> m_map_get_field_func;
 };
 

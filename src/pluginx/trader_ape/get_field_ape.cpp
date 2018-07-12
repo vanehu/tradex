@@ -508,16 +508,16 @@ bool GetField::GetField_190001_100065( int32_t api_session, Request* request, st
 		results_json["task_id"] = request->m_req_json["task_id"].asInt();
 		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
 		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
+		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
+		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
+		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
+		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
+		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
+		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
 		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
 		results_json["commit_ret"] = Fix_GetLong( api_session, 753 ); // FID_SBJG 申报结果 Int
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["commit_msg"] = Fix_GetItem( api_session, 830, m_field_value_short, FIELD_VALUE_SHORT ); // FID_JGSM 结果说明 Char 64
+		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
+		results_json["commit_msg"] = Fix_GetItem( api_session, 830, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_JGSM 结果说明 Char 64
 		// FID_QRBZ   确认标志        Int
 		// FID_GDH    股东号          Char     10
 		// FID_BZ     币种            Char     3
@@ -539,18 +539,18 @@ bool GetField::GetField_190002_100064( int32_t api_session, Request* request, st
 		results_json["task_id"] = request->m_req_json["task_id"].asInt();
 		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
 		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["trans_id"] = Fix_GetItem( api_session, 522, m_field_value_short, FIELD_VALUE_SHORT ); // FID_CJBH 成交编号 Char 16
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
+		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
+		results_json["trans_id"] = Fix_GetItem( api_session, 522, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_CJBH 成交编号 Char 16
+		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
+		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
+		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
+		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
+		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
+		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
 		results_json["fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 本次成交数量 Int
 		results_json["fill_price"] = Fix_GetDouble( api_session, 525 ); // FID_CJJG 本次成交价格 Numeric 9,3
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["fill_time"] = Fix_GetItem( api_session, 527, m_field_value_short, FIELD_VALUE_SHORT ); // FID_CJSJ 成交时间 Char 8
+		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
+		results_json["fill_time"] = Fix_GetItem( api_session, 527, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_CJSJ 成交时间 Char 8
 		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
 		// FID_GDH    股东号          Char     10
 		// FID_BZ     币种            Char     3
@@ -575,12 +575,12 @@ bool GetField::GetField_190003_100066( int32_t api_session, Request* request, st
 		results_json["task_id"] = request->m_req_json["task_id"].asInt();
 		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
 		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
+		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
+		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
+		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
+		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
+		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
+		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
 		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
 		results_json["total_fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 成交数量 Int
 		// FID_GDH    股东号          Char     10
