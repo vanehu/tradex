@@ -28,9 +28,8 @@
 #include "session_ape.h"
 
 typedef boost::shared_ptr<basicx::NetServer> net_server_ptr;
-typedef boost::shared_ptr<basicx::NetClient> net_client_ptr;
 
-class TraderAPE_P : public basicx::NetServer_X, public basicx::NetClient_X
+class TraderAPE_P : public basicx::NetServer_X
 {
 public:
 	TraderAPE_P();
@@ -39,7 +38,7 @@ public:
 public:
 	void SetGlobalPath();
 	bool ReadConfig( std::string file_path );
-	void LogPrint( basicx::syslog_level log_level, std::string& log_cate, std::string& log_info, int32_t log_show = 0 );
+	void LogPrint( basicx::syslog_level log_level, std::string& log_info, int32_t log_show = 0 );
 
 public:
 	bool Initialize();
@@ -80,45 +79,26 @@ private:
 
 // 自定义成员函数和变量
 public:
-	void InitRiskCtl();
-	void RiskOnTimer();
 	bool InitFixInfo();
 
 	void StartNetServer();
 	void OnNetServerInfo( basicx::NetServerInfo& net_server_info_temp ) override;
 	void OnNetServerData( basicx::NetServerData& net_server_data_temp ) override;
-	void StartNetClient();
-	void OnNetClientInfo( basicx::NetClientInfo& net_client_info_temp ) override;
-	void OnNetClientData( basicx::NetClientData& net_client_data_temp ) override;
 
 	int32_t GetTaskId();
 	int32_t GetSessionID();
 	void HandleUserRequest();
 	std::string OnUserLogin( Request* request );
 	std::string OnUserLogout( Request* request );
-	int32_t RiskConfigRead( std::string asset_account );
-	void OnRiskConfigRead( int32_t risks_type, Json::Value& reply_json );
-	int32_t RiskCheckRead( std::string asset_account );
-	void OnRiskCheckRead( int32_t risks_type, Json::Value& reply_json );
-	int32_t RiskNameListRead( std::string asset_account );
-	void OnRiskNameListRead( int32_t risks_type, Json::Value& reply_json );
-	int32_t RiskStockListRead();
-	void OnRiskStockListRead( int32_t risks_type, Json::Value& reply_json );
-	void OnRiskStatDataReset( int32_t risks_type, Json::Value& reply_json );
-	void CommitResult( int32_t code, std::string& data ); // Risks
-	void CommitResult( int32_t task_id, int32_t identity, int32_t code, std::string& data ); // Trade
+	void CommitResult( int32_t task_id, int32_t identity, int32_t code, std::string& data );
 	std::string OnErrorResult( int32_t func_id, int32_t ret_code, std::string ret_info, int32_t ret_task, int32_t encode );
 
 private:
 	Json::CharReader* m_json_reader_trader;
-	Json::CharReader* m_json_reader_risker;
 	Json::CharReaderBuilder m_json_reader_builder;
 	Json::StreamWriterBuilder m_json_writer_trader;
-	Json::StreamWriterBuilder m_json_writer_risker;
 
 	net_server_ptr m_net_server_trade;
-	net_client_ptr m_net_client_risks;
-	basicx::ConnectInfo* m_connecter_risks;
 
 	thread_ptr m_thread_user_request;
 	boost::mutex m_user_request_list_lock;
@@ -129,12 +109,7 @@ private:
 	std::map<int32_t, Session*> m_map_session;
 	std::vector<Session*> m_vec_useless_session;
 
-	thread_ptr m_thread_risk_on_timer;
-	std::atomic<bool> m_risk_on_timer_running;
-	std::map<std::string, Risker*> m_map_risker; // 产品账号为索引
-	std::map<std::string, RiskConfig> m_map_risk_config; // 产品账号为索引
-	std::map<std::string, RiskNameList> m_map_risk_name_list; // 产品账号为索引
-	RiskStockList m_risk_stock_list;
+	risker_ptr m_risker;
 };
 
 #endif // TRADER_APE_TRADER_APE_P_H

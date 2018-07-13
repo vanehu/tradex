@@ -23,7 +23,8 @@
 #ifndef TRADER_APE_SESSION_APE_H
 #define TRADER_APE_SESSION_APE_H
 
-#include "risker_ape.h"
+//#include "risker_ape.h" // For Open Source Version
+#include "risker_ape_pro.h" // For Professional Version
 #include "set_field_ape.h"
 #include "get_field_ape.h"
 
@@ -63,7 +64,7 @@ public:
 
 public:
 	int32_t m_session;
-	std::map<std::string, Risker*> m_map_risker;
+	risker_ptr m_risker;
 	std::string m_username;
 	std::string m_password;
 	std::string m_node_info;
