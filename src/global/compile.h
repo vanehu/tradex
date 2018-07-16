@@ -42,6 +42,17 @@
 #define TRADER_VIP_EXP
 //#define TRADER_VIP_IMP
 
+//---------- 插件版本 ----------//
+
+#define TRADER_APE_COMMUNITY
+//#define TRADER_APE_PROFESSIONAL
+
+#define TRADER_CTP_COMMUNITY
+//#define TRADER_CTP_PROFESSIONAL
+
+#define TRADER_VIP_COMMUNITY
+//#define TRADER_VIP_PROFESSIONAL
+
 //---------- 设置结束 ----------//
 
 #ifdef TRADEX_GLOBAL_EXP

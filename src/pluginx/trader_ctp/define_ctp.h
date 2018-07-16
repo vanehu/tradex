@@ -28,7 +28,7 @@
 // 插件定义
 #define PLUGIN_NAME "trader_ctp" // 插件名称
 #define PLUGIN_NAME_CN "上 期 期 货 交 易 插 件" // 插件中文名称
-#define PLUGIN_VERSION "V0.1.0-Beta Build 20180713" // 插件版本号
+#define PLUGIN_VERSION "V0.1.0-Beta Build 20180716" // 插件版本号
 
 // 插件自定义消息
 

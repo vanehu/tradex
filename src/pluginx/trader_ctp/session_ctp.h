@@ -23,8 +23,14 @@
 #ifndef TRADER_CTP_SESSION_CTP_H
 #define TRADER_CTP_SESSION_CTP_H
 
-//#include "risker_ctp.h" // For Open Source Version
-#include "risker_ctp_pro.h" // For Professional Version
+#include "../../global/compile.h"
+
+#ifdef TRADER_CTP_COMMUNITY
+    #include "risker_ctp.h"
+#endif
+#ifdef TRADER_CTP_PROFESSIONAL
+    #include "risker_ctp_pro.h"
+#endif
 
 #define FILE_LOG_ONLY 1
 
