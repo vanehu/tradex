@@ -23,8 +23,15 @@
 #ifndef TRADER_APE_SESSION_APE_H
 #define TRADER_APE_SESSION_APE_H
 
-//#include "risker_ape.h" // For Open Source Version
-#include "risker_ape_pro.h" // For Professional Version
+#include "../../global/compile.h"
+
+#ifdef TRADER_APE_COMMUNITY
+    #include "risker_ape.h"
+#endif
+#ifdef TRADER_APE_PROFESSIONAL
+    #include "risker_ape_pro.h"
+#endif
+
 #include "set_field_ape.h"
 #include "get_field_ape.h"
 
