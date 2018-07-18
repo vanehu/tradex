@@ -1,3 +1,3 @@
 # TradeX
 Trade Server
-<br>Latest version is V0.2.0-Beta Build 20180716
+<br>Latest version is V0.3.0-Beta Build 20180718
