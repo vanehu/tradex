@@ -20,19 +20,19 @@
 * Be sure to retain the above copyright notice and conditions.
 */
 
-#ifndef TRADER_VIP_DEFINE_H
-#define TRADER_VIP_DEFINE_H
+#ifndef TRADER_VIP_DEFINE_VIP_H
+#define TRADER_VIP_DEFINE_VIP_H
 
 #include "../../global/define.h"
 
 // 插件定义
 #define PLUGIN_NAME "trader_vip" // 插件名称
 #define PLUGIN_NAME_CN "顶 点 快 速 股 票 交 易 插 件" // 插件中文名称
-#define PLUGIN_VERSION "V0.1.0-Beta Build 20180628" // 插件版本号
+#define PLUGIN_VERSION "V0.1.0-Beta Build 20180718" // 插件版本号
 
 // 插件自定义消息
 
 // 插件自定义参数
 #define CFG_WORK_THREAD_NUM 1 // 输入输出服务工作线程数
 
-#endif // TRADER_VIP_DEFINE_H
+#endif // TRADER_VIP_DEFINE_VIP_H
