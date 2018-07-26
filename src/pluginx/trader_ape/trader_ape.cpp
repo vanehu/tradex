@@ -604,48 +604,54 @@ std::string TraderAPE_P::OnUserLogin( Request* request ) {
 		}
 		else { // 连接成功，但必须另外校验密码
 			long api_session = Fix_AllocateSession( session->m_connect );
-
-			Fix_SetNode( api_session, m_configs.m_node_info.c_str() ); //
-			int32_t ret = Fix_CreateReq( api_session, 610301 ); // 客户交易密码校验
-			if( ret < 0 ) {
-				delete session; // 新建会话时肯定不在 m_map_session 中
-				Fix_ReleaseSession( api_session );
-				log_info = "交易用户 密码校验 时创建 Fix_CreateReq 失败！";
-				return OnErrorResult( TD_FUNC_STOCK_LOGIN, -1, log_info, task_id, request->m_code );
-			}
-
-			Fix_SetString( api_session, 605, username.c_str() ); // 605 FID_KHH 客户号
-			char c_password[64] = { 0 };
-			strcpy_s( c_password, 64, password.c_str() );
-			Fix_Encode( c_password );
-			Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-			Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
-
-			long fid_code = 0;
-			char fid_message[APE_FID_MESSAGE_LENGTH];
-			memset( &fid_message, 0, APE_FID_MESSAGE_LENGTH );
-
-			if( Fix_Run( api_session ) ) {
-				fid_code = Fix_GetLong( api_session, 507, 0 );
-				Fix_GetItem( api_session, 508, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
-				if( fid_code < 0 ) {
+			if( api_session != 0 ) {
+				int32_t ret = Fix_CreateHead( api_session, 190101 ); // 客户交易密码校验
+				if( ret != 1 ) {
 					delete session; // 新建会话时肯定不在 m_map_session 中
 					Fix_ReleaseSession( api_session );
-					FormatLibrary::StandardLibrary::FormatTo( log_info, "交易用户 密码校验 失败！{0}", fid_message );
+					log_info = "交易用户 密码校验 时创建 Fix_CreateHead 失败！";
+					return OnErrorResult( TD_FUNC_STOCK_LOGIN, -1, log_info, task_id, request->m_code );
+				}
+
+				Fix_SetString( api_session, 605, username.c_str() ); // 605 FID_KHH 客户号
+				char c_password[64] = { 0 };
+				strcpy_s( c_password, 64, password.c_str() );
+				Fix_Encode( c_password );
+				Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
+				Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
+
+				long fid_code = 0;
+				char fid_message[APE_FID_MESSAGE_LENGTH];
+				memset( &fid_message, 0, APE_FID_MESSAGE_LENGTH );
+
+				if( Fix_Run( api_session ) ) {
+					fid_code = Fix_GetLong( api_session, 507, 0 );
+					Fix_GetItem( api_session, 508, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
+					if( fid_code < 0 ) {
+						delete session; // 新建会话时肯定不在 m_map_session 中
+						Fix_ReleaseSession( api_session );
+						FormatLibrary::StandardLibrary::FormatTo( log_info, "交易用户 密码校验 失败！{0}", fid_message );
+						return OnErrorResult( TD_FUNC_STOCK_LOGIN, fid_code, log_info, task_id, request->m_code );
+					}
+				}
+				else {
+					fid_code = Fix_GetCode( api_session );
+					Fix_GetErrMsg( api_session, fid_message, APE_FID_MESSAGE_LENGTH );
+
+					delete session; // 新建会话时肯定不在 m_map_session 中
+					Fix_ReleaseSession( api_session );
+					FormatLibrary::StandardLibrary::FormatTo( log_info, "交易用户 密码校验 时执行 Fix_Run 失败！{0}", fid_message );
 					return OnErrorResult( TD_FUNC_STOCK_LOGIN, fid_code, log_info, task_id, request->m_code );
 				}
+
+				Fix_ReleaseSession( api_session );
 			}
 			else {
-				fid_code = Fix_GetCode( api_session );
-				Fix_GetErrMsg( api_session, fid_message, APE_FID_MESSAGE_LENGTH );
-
 				delete session; // 新建会话时肯定不在 m_map_session 中
 				Fix_ReleaseSession( api_session );
-				FormatLibrary::StandardLibrary::FormatTo( log_info, "交易用户 密码校验 时执行 Fix_Run 失败！{0}", fid_message );
-				return OnErrorResult( TD_FUNC_STOCK_LOGIN, fid_code, log_info, task_id, request->m_code );
+				log_info = "交易用户 密码校验 时创建 Fix_AllocateSession 失败！";
+				return OnErrorResult( TD_FUNC_STOCK_LOGIN, -1, log_info, task_id, request->m_code );
 			}
-
-			Fix_ReleaseSession( api_session );
 		}
 		// 相当于首次登录柜台时校验了账号和密码
 		session->m_username = username;
