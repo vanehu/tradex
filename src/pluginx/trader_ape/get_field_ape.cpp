@@ -24,17 +24,19 @@
 GetField::GetField() {
 	m_syslog = basicx::SysLog_S::GetInstance();
 
-	m_map_get_field_func[120001] = &GetField::GetField_120001_620001;
-	m_map_get_field_func[120002] = &GetField::GetField_120002_620021;
-	m_map_get_field_func[120003] = &GetField::GetField_120003_620002;
-	m_map_get_field_func[120004] = &GetField::GetField_120004_620022;
-	m_map_get_field_func[130002] = &GetField::GetField_130002_630002;
-	m_map_get_field_func[130004] = &GetField::GetField_130004_630004;
-	m_map_get_field_func[130005] = &GetField::GetField_130005_630005;
-	m_map_get_field_func[130006] = &GetField::GetField_130006_630006;
-	m_map_get_field_func[130008] = &GetField::GetField_130008_601410;
-	m_map_get_field_func[130009] = &GetField::GetField_130009_601411;
-	m_map_get_field_func[190001] = &GetField::GetField_190001_100065;
+	m_map_get_field_func[120001] = &GetField::GetField_120001_620001; // 120001_204501
+	m_map_get_field_func[120002] = &GetField::GetField_120002_620021; // 120002_204502
+	m_map_get_field_func[120003] = &GetField::GetField_120003_620002; // 120003_204513
+	m_map_get_field_func[120004] = &GetField::GetField_120004_620022; // 120004_204511
+	// 120005_204545 // 港股通买卖委托
+	// 120006_204546 // 港股通委托撤单
+	m_map_get_field_func[130002] = &GetField::GetField_130002_630002; // 130002_303002
+	m_map_get_field_func[130004] = &GetField::GetField_130004_630004; // 130004_304101
+	m_map_get_field_func[130005] = &GetField::GetField_130005_630005; // 130005_304103
+	m_map_get_field_func[130006] = &GetField::GetField_130006_630006; // 130006_304109
+	m_map_get_field_func[130008] = &GetField::GetField_130008_601410; // 130008_104105
+	m_map_get_field_func[130009] = &GetField::GetField_130009_601411; // 130009_104106
+	m_map_get_field_func[190001] = &GetField::GetField_190001_100065; // 190001_100050 50？
 	m_map_get_field_func[190002] = &GetField::GetField_190002_100064;
 	m_map_get_field_func[190003] = &GetField::GetField_190003_100066;
 }
@@ -500,6 +502,7 @@ bool GetField::GetField_130009_601411( int32_t api_session, Request* request, st
 	return false;
 }
 
+// 未确认字段：FID_WTLB、FID_ZQLB、FID_CDSL、FID_SBJG // FID_QRBZ、FID_GDH、FID_BZ、FID_DJZJ
 bool GetField::GetField_190001_100065( int32_t api_session, Request* request, std::string& results ) { // 申报回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
@@ -531,6 +534,7 @@ bool GetField::GetField_190001_100065( int32_t api_session, Request* request, st
 	return false;
 }
 
+// 未确认字段：FID_WTLB、FID_CJBH、FID_ZQLB、FID_CDSL // FID_GDH、FID_BZ、FID_QSZJ、FID_ZCJSL、FID_ZCJJE、FID_CJJE
 bool GetField::GetField_190002_100064( int32_t api_session, Request* request, std::string& results ) { // 成交回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
@@ -567,6 +571,7 @@ bool GetField::GetField_190002_100064( int32_t api_session, Request* request, st
 	return false;
 }
 
+// 未确认字段：FID_WTLB、FID_ZQLB、FID_CDSL // FID_GDH、FID_BZ、FID_DJZJ
 bool GetField::GetField_190003_100066( int32_t api_session, Request* request, std::string& results ) { // 撤单回报
 	try {
 		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码

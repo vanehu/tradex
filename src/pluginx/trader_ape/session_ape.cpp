@@ -33,7 +33,7 @@ bool OnSubscibe_CJ( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long su
 bool OnSubscibe_SB( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, void* data ) {
 	Session* session = (Session*)data;
 	session->m_call_back_event_lock_sb.lock();
-	bool result = session->CallBackEvent( api_connect, api_session, subscibe, 190001 ); // 190001_100065
+	bool result = session->CallBackEvent( api_connect, api_session, subscibe, 190001 ); // 190001_100065 // 190001_1000050 ？
 	session->m_call_back_event_lock_sb.unlock();
 	return result;
 }
@@ -192,7 +192,7 @@ std::string Session::OnSubscibe( Request* request ) {
 			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 100064 成交回报 异常！session：{0}", m_session );
 			return m_trader_ape_p->OnErrorResult( TD_FUNC_STOCK_ADDSUB, -1, log_info, task_id, request->m_code );
 		}
-		m_subscibe_sb = Fix_MDBSubscibeByCustomer( m_connect, 100065, OnSubscibe_SB, this, m_username.c_str(), c_password );
+		m_subscibe_sb = Fix_MDBSubscibeByCustomer( m_connect, 100065, OnSubscibe_SB, this, m_username.c_str(), c_password ); // 1000050 ？
 		if( m_subscibe_sb <= 0 ) {
 			Fix_UnSubscibeByHandle( m_subscibe_cj );
 			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 100065 申报回报 异常！session：{0}", m_session );

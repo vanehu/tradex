@@ -24,16 +24,18 @@
 SetField::SetField() {
 	m_syslog = basicx::SysLog_S::GetInstance();
 
-	m_map_set_field_func[120001] = &SetField::SetField_120001_620001;
-	m_map_set_field_func[120002] = &SetField::SetField_120002_620021;
-	m_map_set_field_func[120003] = &SetField::SetField_120003_620002;
-	m_map_set_field_func[120004] = &SetField::SetField_120004_620022;
-	m_map_set_field_func[130002] = &SetField::SetField_130002_630002;
-	m_map_set_field_func[130004] = &SetField::SetField_130004_630004;
-	m_map_set_field_func[130005] = &SetField::SetField_130005_630005;
-	m_map_set_field_func[130006] = &SetField::SetField_130006_630006;
-	m_map_set_field_func[130008] = &SetField::SetField_130008_601410;
-	m_map_set_field_func[130009] = &SetField::SetField_130009_601411;
+	m_map_set_field_func[120001] = &SetField::SetField_120001_620001; // 120001_204501
+	m_map_set_field_func[120002] = &SetField::SetField_120002_620021; // 120002_204502
+	m_map_set_field_func[120003] = &SetField::SetField_120003_620002; // 120003_204513
+	m_map_set_field_func[120004] = &SetField::SetField_120004_620022; // 120004_204511
+	// 120005_204545 // 港股通买卖委托
+	// 120006_204546 // 港股通委托撤单
+	m_map_set_field_func[130002] = &SetField::SetField_130002_630002; // 130002_303002
+	m_map_set_field_func[130004] = &SetField::SetField_130004_630004; // 130004_304101
+	m_map_set_field_func[130005] = &SetField::SetField_130005_630005; // 130005_304103
+	m_map_set_field_func[130006] = &SetField::SetField_130006_630006; // 130006_304109
+	m_map_set_field_func[130008] = &SetField::SetField_130008_601410; // 130008_104105
+	m_map_set_field_func[130009] = &SetField::SetField_130009_601411; // 130009_104106
 }
 
 SetField::~SetField() {

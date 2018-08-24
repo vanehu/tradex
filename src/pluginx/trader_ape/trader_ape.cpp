@@ -624,6 +624,7 @@ std::string TraderAPE_P::OnUserLogin( Request* request ) {
 				memset( &fid_message, 0, APE_FID_MESSAGE_LENGTH );
 
 				if( Fix_Run( api_session ) ) {
+					// 其实这里可能会有多个，可以使用 for( size_t i = 0; i < Fix_GetCount( api_session ); ++i) {} 循环处理
 					fid_code = Fix_GetLong( api_session, 507, 0 );
 					Fix_GetItem( api_session, 508, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
 					if( fid_code < 0 ) {
