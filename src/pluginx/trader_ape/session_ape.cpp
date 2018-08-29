@@ -22,27 +22,11 @@
 #include "session_ape.h"
 #include "trader_ape_.h"
 
-bool OnSubscibe_CJ( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, void* data ) {
+bool OnSubscibe_JY( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, void* data ) {
 	Session* session = (Session*)data;
-	session->m_call_back_event_lock_cj.lock();
-	bool result = session->CallBackEvent( api_connect, api_session, subscibe, 190002 ); // 190002_100064
-	session->m_call_back_event_lock_cj.unlock();
-	return result;
-}
-
-bool OnSubscibe_SB( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, void* data ) {
-	Session* session = (Session*)data;
-	session->m_call_back_event_lock_sb.lock();
-	bool result = session->CallBackEvent( api_connect, api_session, subscibe, 190001 ); // 190001_100065 // 190001_1000050 ？
-	session->m_call_back_event_lock_sb.unlock();
-	return result;
-}
-
-bool OnSubscibe_CD( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, void* data ) {
-	Session* session = (Session*)data;
-	session->m_call_back_event_lock_cd.lock();
-	bool result = session->CallBackEvent( api_connect, api_session, subscibe, 190003 ); // 190003_100066
-	session->m_call_back_event_lock_cd.unlock();
+	session->m_call_back_event_lock_jy.lock();
+	bool result = session->CallBackEvent( api_connect, api_session, subscibe );
+	session->m_call_back_event_lock_jy.unlock();
 	return result;
 }
 
@@ -55,9 +39,7 @@ Session::Session( TraderAPE_P* trader_ape_p )
 	, m_connect( 0 )
 	, m_connect_ok( false )
 	, m_subscibe_ok( false )
-	, m_subscibe_cj( 0 )
-	, m_subscibe_sb( 0 )
-	, m_subscibe_cd( 0 )
+	, m_subscibe_jy( 0 )
 	, m_service_user_running( false )
 	, m_log_cate( "<TRADER_APE>" ) {
 	m_map_set_field_func = &m_set_field.m_map_set_field_func;
@@ -183,26 +165,12 @@ std::string Session::OnSubscibe( Request* request ) {
 	}
 
 	if( false == m_subscibe_ok ) {
-		char c_password[64];
-		memset( c_password, 0, sizeof( c_password ) );
+		char c_password[64] = { 0 };
 		strcpy_s( c_password, 64, m_password.c_str() );
-		Fix_Encode( c_password ); // 勿将 APE 和 VIP 接口 DLL 搞混，不然这里会加密错误，导致订阅返回为零
-		m_subscibe_cj = Fix_MDBSubscibeByCustomer( m_connect, 100064, OnSubscibe_CJ, this, m_username.c_str(), c_password );
-		if( m_subscibe_cj <= 0 ) {
-			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 100064 成交回报 异常！session：{0}", m_session );
-			return m_trader_ape_p->OnErrorResult( TD_FUNC_STOCK_ADDSUB, -1, log_info, task_id, request->m_code );
-		}
-		m_subscibe_sb = Fix_MDBSubscibeByCustomer( m_connect, 100065, OnSubscibe_SB, this, m_username.c_str(), c_password ); // 1000050 ？
-		if( m_subscibe_sb <= 0 ) {
-			Fix_UnSubscibeByHandle( m_subscibe_cj );
-			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 100065 申报回报 异常！session：{0}", m_session );
-			return m_trader_ape_p->OnErrorResult( TD_FUNC_STOCK_ADDSUB, -1, log_info, task_id, request->m_code );
-		}
-		m_subscibe_cd = Fix_MDBSubscibeByCustomer( m_connect, 100066, OnSubscibe_CD, this, m_username.c_str(), c_password );
-		if( m_subscibe_cd <= 0 ) {
-			Fix_UnSubscibeByHandle( m_subscibe_cj );
-			Fix_UnSubscibeByHandle( m_subscibe_sb );
-			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 100066 撤单回报 异常！session：{0}", m_session );
+		//Fix_Encode( c_password ); // 接口 APE 不需要，不然会导致订阅返回为零
+		m_subscibe_jy = Fix_SubscibeByCustomer( m_connect, 1000050, OnSubscibe_JY, this, m_username.c_str(), c_password );
+		if( m_subscibe_jy <= 0 ) {
+			FormatLibrary::StandardLibrary::FormatTo( log_info, "订阅 1000050 交易回报 异常！session：{0}", m_session );
 			return m_trader_ape_p->OnErrorResult( TD_FUNC_STOCK_ADDSUB, -1, log_info, task_id, request->m_code );
 		}
 		m_subscibe_ok = true;
@@ -244,9 +212,7 @@ std::string Session::OnUnsubscibe( Request* request ) {
 	if( m_map_sub_endpoint.empty() ) { // 订阅已无用户
 		if( true == m_subscibe_ok ) {
 			m_subscibe_ok = false;
-			Fix_UnSubscibeByHandle( m_subscibe_cj );
-			Fix_UnSubscibeByHandle( m_subscibe_sb );
-			Fix_UnSubscibeByHandle( m_subscibe_cd );
+			Fix_UnSubscibeByHandle( m_subscibe_jy );
 		}
 	}
 
@@ -293,38 +259,44 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 	int32_t func_type = 0;
 	switch( func_id ) {
 	case 120001: // 单个委托下单
-		func_type = 620001;
+		func_type = 204501;
 		break;
 	case 120002: // 单个委托撤单
-		func_type = 620021;
+		func_type = 204502;
 		break;
 	case 120003: // 批量委托下单
-		func_type = 620002;
+		func_type = 204513;
 		break;
 	case 120004: // 批量委托撤单
-		func_type = 620022;
+		func_type = 204511;
+		break;
+	case 120005: // 港股通买卖委托
+		func_type = 204545;
+		break;
+	case 120006: // 港股通委托撤单
+		func_type = 204546;
 		break;
 	case 130002: // 查询客户资金
-		func_type = 630002;
+		func_type = 303002;
 		break;
 	case 130004: // 查询客户持仓
-		func_type = 630004;
+		func_type = 304101;
 		break;
 	case 130005: // 查询客户当日委托
-		func_type = 630005;
+		func_type = 304103;
 		break;
 	case 130006: // 查询客户当日成交
-		func_type = 630006;
+		func_type = 304109;
 		break;
 	case 130008: // 查询ETF基本信息
-		func_type = 601410;
+		func_type = 104105;
 		break;
 	case 130009: // 查询ETF成分股信息
-		func_type = 601411;
+		func_type = 104106;
 		break;
 	}
 
-	if( 120001 == func_id || 120002 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
+	if( 120001 == func_id || 120002 == func_id || 120005 == func_id || 120006 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
 		std::string asset_account = request->m_req_json["asset_account"].asString();
 		int32_t risk_ret = m_risker->HandleRiskCtlCheck( asset_account, func_id, task_id, request, log_info );
 		if( risk_ret < 0 ) {
@@ -339,14 +311,14 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 		return m_trader_ape_p->OnErrorResult( func_id, -1, log_info, task_id, request->m_code );
 	}
 
-	if( 120001 == func_id || 120002 == func_id || 120003 == func_id || 120004 == func_id || 130002 == func_id || 130004 == func_id || 130005 == func_id || 130006 == func_id ) {
-		Fix_SetString( api_session, 605, m_username.c_str() ); // 605 FID_KHH 客户号
+	if( 120001 == func_id || 120002 == func_id || 120003 == func_id || 120004 == func_id || 120005 == func_id || 120006 == func_id || 130002 == func_id || 130004 == func_id || 130005 == func_id || 130006 == func_id ) {
+		Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 		char c_password[64] = { 0 };
 		strcpy_s( c_password, 64, m_password.c_str() );
-		Fix_Encode( c_password );
-		Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-		Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
-		Fix_SetString( api_session, 864, m_sys_user_id.c_str() ); // 864 FID_WTGY 委托柜员
+		//Fix_Encode( c_password ); // 接口 APE 可能不使用也可以，待验证
+		Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+		//Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 可能不指定也可以，待验证
+		Fix_SetString( api_session, FID_WTGY, m_sys_user_id.c_str() ); // 委托柜员
 	}
 	
 	SetField::SetFieldFunc set_field_func = it_set_field_func->second;
@@ -359,11 +331,11 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 	memset( &m_fid_message, 0, APE_FID_MESSAGE_LENGTH );
 
 	if( Fix_Run( api_session ) ) {
-		if( 120001 == func_id ) { // 缓存本地委托号与委托请求的映射供交易回报获取对应用户请求用
+		if( 120001 == func_id || 120005 == func_id ) { // 缓存本地委托号与委托请求的映射供交易回报获取对应用户请求用
 			long ret_count = Fix_GetCount( api_session ); // 业务执行出错时 ret_count == 0
 			if( ret_count > 0 ) {
 				for( int32_t i = 0; i < ret_count; i++ ) { // 其实只有一条的
-					int32_t order_ref = Fix_GetLong( api_session, 681, i ); // FID_WTH 委托号 Int
+					int32_t order_ref = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
 					m_order_ref_request_map_lock.lock();
 					m_map_order_ref_request[order_ref] = *request;
 					m_order_ref_request_map_lock.unlock();
@@ -384,7 +356,7 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 
 		//m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY ); // 查询类返回的数据可能会非常多
 
-		if( 120001 == func_id || 120002 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
+		if( 120001 == func_id || 120002 == func_id || 120005 == func_id || 120006 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
 			std::string asset_account = request->m_req_json["asset_account"].asString();
 			m_risker->CheckTradeResultForRisk( asset_account, func_id, task_id, results );
 		}
@@ -426,38 +398,44 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 	int32_t func_type = 0;
 	switch( func_id ) {
 	case 120001: // 单个委托下单
-		func_type = 620001;
+		func_type = 204501;
 		break;
 	case 120002: // 单个委托撤单
-		func_type = 620021;
+		func_type = 204502;
 		break;
 	case 120003: // 批量委托下单
-		func_type = 620002;
+		func_type = 204513;
 		break;
 	case 120004: // 批量委托撤单
-		func_type = 620022;
+		func_type = 204511;
+		break;
+	case 120005: // 港股通买卖委托
+		func_type = 204545;
+		break;
+	case 120006: // 港股通委托撤单
+		func_type = 204546;
 		break;
 	case 130002: // 查询客户资金
-		func_type = 630002;
+		func_type = 303002;
 		break;
 	case 130004: // 查询客户持仓
-		func_type = 630004;
+		func_type = 304101;
 		break;
 	case 130005: // 查询客户当日委托
-		func_type = 630005;
+		func_type = 304103;
 		break;
 	case 130006: // 查询客户当日成交
-		func_type = 630006;
+		func_type = 304109;
 		break;
 	case 130008: // 查询ETF基本信息
-		func_type = 601410;
+		func_type = 104105;
 		break;
 	case 130009: // 查询ETF成分股信息
-		func_type = 601411;
+		func_type = 104106;
 		break;
 	}
 
-	if( 120001 == func_id || 120002 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
+	if( 120001 == func_id || 120002 == func_id || 120005 == func_id || 120006 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
 		std::string asset_account = request->m_req_json["asset_account"].asString();
 		int32_t risk_ret = m_risker->HandleRiskCtlCheck( asset_account, func_id, task_id, request, log_info );
 		if( risk_ret < 0 ) {
@@ -465,7 +443,7 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 		}
 	}
 
-	if( 120001 == func_id || 120002 == func_id || 120003 == func_id || 120004 == func_id ) { // 模拟成交
+	if( 120001 == func_id || 120002 == func_id || 120003 == func_id || 120004 == func_id || 120005 == func_id || 120006 == func_id ) { // 模拟成交
 		std::string results = "";
 
 		FormatLibrary::StandardLibrary::FormatTo( log_info, "业务 {0} 提交成功。", func_id );
@@ -517,7 +495,7 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 				results_json["account"] = m_username; // 交易账号
 				results_json["order_id"] = request->m_req_json["task_id"].asInt();
 				results_json["exch_side"] = request->m_req_json["exch_side"].asInt();
-				results_json["trans_id"] = "20171130";
+				results_json["trans_id"] = "20171231";
 				results_json["symbol"] = request->m_req_json["symbol"].asCString();
 				results_json["security_type"] = "A0"; // A股
 				results_json["exchange"] = request->m_req_json["exchange"].asCString();
@@ -553,7 +531,7 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 				results_json["task_id"] = request->m_req_json["task_id"].asInt();
 				results_json["order_id"] = request->m_req_json["task_id"].asInt();
 				results_json["exch_side"] = request->m_req_json["exch_side"].asInt();
-				results_json["trans_id"] = "20171130";
+				results_json["trans_id"] = "20171231";
 				results_json["symbol"] = request->m_req_json["symbol"].asCString();
 				results_json["security_type"] = "A0"; // A股
 				results_json["exchange"] = request->m_req_json["exchange"].asCString();
@@ -624,7 +602,11 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 
 		//if( 120004 == func_id ) {}
 
-		if( 120001 == func_id || 120002 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
+		//if( 120005 == func_id ) {}
+
+		//if( 120006 == func_id ) {}
+
+		if( 120001 == func_id || 120002 == func_id || 120005 == func_id || 120006 == func_id ) { // 风控检查 // 目前未对批量委托做风控检查
 			std::string asset_account = request->m_req_json["asset_account"].asString();
 			m_risker->CheckTradeResultForRisk( asset_account, func_id, task_id, results );
 		}
@@ -640,12 +622,12 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 		}
 
 		if( 130002 == func_id || 130004 == func_id || 130005 == func_id || 130006 == func_id ) {
-			Fix_SetString( api_session, 605, m_username.c_str() ); // 605 FID_KHH 客户号
+			Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 			char c_password[64] = { 0 };
 			strcpy_s( c_password, 64, m_password.c_str() );
-			Fix_Encode( c_password );
-			Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-			Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
+			//Fix_Encode( c_password ); // 接口 APE 可能不使用也可以，待验证
+			Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+			//Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 可能不指定也可以，待验证
 		}
 
 		SetField::SetFieldFunc set_field_func = it_set_field_func->second;
@@ -694,131 +676,172 @@ Request* Session::GetRequestByOrderRef( int32_t order_ref ) {
 	return request;
 }
 
-bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, int32_t func_id ) {
+bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe ) {
 	std::string log_info;
 
-	auto it_get_field_func = m_map_get_field_func->find( func_id );
-	if( it_get_field_func == m_map_get_field_func->end() ) {
-		FormatLibrary::StandardLibrary::FormatTo( log_info, "回报 {0} 没有对应 取值 函数！", func_id );
-		m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
+	char field_value_short[256];
+	long ret_count = Fix_GetCount( api_session );
+	if( ret_count > 0 ) {
+		for( int32_t i = 0; i < ret_count; i++ ) { // 其实只有一条的
+			memset( field_value_short, 0, FIELD_VALUE_SHORT );
+			std::string fid_cxbz = Fix_GetItem( api_session, FID_CXBZ, field_value_short, FIELD_VALUE_SHORT, i ); // 撤销标志，"W"表示撤单记录，其它为委托记录
+			memset( field_value_short, 0, FIELD_VALUE_SHORT );
+			std::string fid_ywlb = Fix_GetItem( api_session, FID_YWLB, field_value_short, FIELD_VALUE_SHORT, i ); // 业务类别
+			int32_t fid_cjsl = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量
+
+			FormatLibrary::StandardLibrary::FormatTo( log_info, "交易回报：{0} {1} {2} {3}", fid_cxbz, fid_ywlb, fid_cjsl, i );
+			m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, log_info );
+
+			std::string results = "";
+			std::string asset_account = "";
+			Json::StreamWriterBuilder json_writer; //
+			int32_t order_ref = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
+			Request* request = GetRequestByOrderRef( order_ref );
+			if( request != nullptr ) {
+				asset_account = request->m_req_json["asset_account"].asString();
+
+				if( "O" == fid_cxbz && "Q" == fid_ywlb && 0 == fid_cjsl ) { // 申报回报
+					try {
+						Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
+						results_json["ret_func"] = 190001;
+						results_json["task_id"] = request->m_req_json["task_id"].asInt();
+						results_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
+						results_json["exch_side"] = Fix_GetLong( api_session, FID_WTLB, i ); // 委托类别 Int
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+						results_json["cxl_qty"] = 0;
+						// 0：未申报，1：正在申报，2：已申报未成交，3：非法委托，4：申请资金授权中，
+						// 5：部分成交，6：全部成交，7：部成部撤，8：全部撤单，9：撤单未成，10：等待人工申报
+						//results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
+						results_json["commit_ret"] = 2;
+						//memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						//results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
+						results_json["commit_msg"] = "";
+						results = Json::writeString( json_writer, results_json );
+						if( results != "" ) {
+							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
+						}
+						//////////////////// 发送给风控服务端 ////////////////////
+						results_json["ret_func"] = TD_FUNC_RISKS_ORDER_REPORT_STK;
+						results_json["task_id"] = 0;
+						results_json["asset_account"] = asset_account; // 产品账号
+						results_json["account"] = m_username; // 交易账号
+						results_json["total_fill_qty"] = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int
+						m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
+						//////////////////// 发送给风控服务端 ////////////////////
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY );
+					}
+					catch( ... ) {
+						log_info = "申报 回报取值异常！";
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
+					}
+				}
+				else if( "W" == fid_cxbz && "C" == fid_ywlb && fid_cjsl < 0 ) { // 撤单回报
+					try {
+						Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
+						results_json["ret_func"] = 190003;
+						results_json["task_id"] = request->m_req_json["task_id"].asInt();
+						results_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
+						results_json["exch_side"] = Fix_GetLong( api_session, FID_WTLB, i ); // 委托类别 Int
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+						int32_t amount = request->m_req_json["amount"].asInt();
+						int32_t total_fill_qty = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int
+						results_json["cxl_qty"] = amount - total_fill_qty;
+						results_json["total_fill_qty"] = total_fill_qty;
+						results = Json::writeString( json_writer, results_json );
+						if( results != "" ) {
+							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
+						}
+						//////////////////// 发送给风控服务端 ////////////////////
+						results_json["ret_func"] = TD_FUNC_RISKS_ORDER_REPORT_STK;
+						results_json["task_id"] = 0;
+						results_json["asset_account"] = asset_account; // 产品账号
+						results_json["account"] = m_username; // 交易账号
+						// 0：未申报，1：正在申报，2：已申报未成交，3：非法委托，4：申请资金授权中，
+						// 5：部分成交，6：全部成交，7：部成部撤，8：全部撤单，9：撤单未成，10：等待人工申报
+						//results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
+						// 如果已全部成交，则会在撤单时收到撤单失败应答
+						if( total_fill_qty < amount ) {
+							results_json["commit_ret"] = 7; // 部成部撤
+						}
+						else {
+							results_json["commit_ret"] = 8; // 全部撤单
+						}
+						//results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
+						results_json["commit_msg"] = "";
+						m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
+						//////////////////// 发送给风控服务端 ////////////////////
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY );
+					}
+					catch( ... ) {
+						log_info = "撤单 回报取值异常！";
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
+					}
+				}
+				else if( "0" == fid_cxbz && "Q" == fid_ywlb && fid_cjsl > 0 ) { // 成交回报
+					try {
+						Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
+						results_json["ret_func"] = 190002;
+						results_json["task_id"] = request->m_req_json["task_id"].asInt();
+						results_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
+						results_json["exch_side"] = Fix_GetLong( api_session, FID_WTLB, i ); // 委托类别 Int
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["trans_id"] = Fix_GetItem( api_session, FID_CJBH, field_value_short, FIELD_VALUE_SHORT, i ); // 成交编号 Char 16
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						results_json["fill_qty"] = Fix_GetLong( api_session, FID_CJSL, i ); // 本次成交数量 Int
+						results_json["fill_price"] = Fix_GetDouble( api_session, FID_CJJG, i ); // 本次成交价格 Numeric 9,3
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["fill_time"] = Fix_GetItem( api_session, FID_CJSJ, field_value_short, FIELD_VALUE_SHORT, i ); // 成交时间 Char 8
+						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+						results_json["cxl_qty"] = 0;
+						results = Json::writeString( json_writer, results_json );
+						if( results != "" ) {
+							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
+						}
+						//////////////////// 发送给风控服务端 ////////////////////
+						results_json["ret_func"] = TD_FUNC_RISKS_TRANSACTION_REPORT_STK;
+						results_json["task_id"] = 0;
+						results_json["asset_account"] = asset_account; // 产品账号
+						results_json["account"] = m_username; // 交易账号
+						m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
+						//////////////////// 发送给风控服务端 ////////////////////
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY );
+					}
+					catch( ... ) {
+						log_info = "成交 回报取值异常！";
+						m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
+					}
+				}
+				else {
+					FormatLibrary::StandardLibrary::FormatTo( log_info, "交易回报类型未知！{0} {1} {2}", fid_cxbz, fid_ywlb, fid_cjsl );
+					m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
+				}
+			}
+			else {
+				FormatLibrary::StandardLibrary::FormatTo( log_info, "交易回报 查找 委托请求 失败！{0}", order_ref );
+				m_trader_ape_p->LogPrint( basicx::syslog_level::c_warn, log_info );
+			}
+		} // for
+	}
+	else {
 		return false;
 	}
-
-	std::string results = "";
-	std::string asset_account = "";
-
-	int32_t order_ref = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-	Request* request = GetRequestByOrderRef( order_ref );
-	if( request != nullptr ) {
-		asset_account = request->m_req_json["asset_account"].asString();
-	}
-
-	//////////////////// 发送给风控服务端 ////////////////////
-	if( 190001 == func_id || 190003 == func_id ) { // 合并下单和撤单
-		try {
-			char field_value_short[256];
-			Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
-			results_json["ret_func"] = TD_FUNC_RISKS_ORDER_REPORT_STK;
-			results_json["task_id"] = 0;
-			results_json["asset_account"] = asset_account; // 产品账号
-			results_json["account"] = m_username; // 交易账号
-			results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-			results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["symbol"] = Fix_GetItem( api_session, 719, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["security_type"] = Fix_GetItem( api_session, 720, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["exchange"] = Fix_GetItem( api_session, 599, field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-			results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-			results_json["commit_ret"] = Fix_GetLong( api_session, 753 ); // FID_SBJG 申报结果 Int                                           // 仅限 190001 下单
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, 830, field_value_short, FIELD_VALUE_SHORT ) ); // FID_JGSM 结果说明 Char 64 // 仅限 190001 下单
-			results_json["total_fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 成交数量 Int                                       // 仅限 190003 撤单
-			// FID_QRBZ   确认标志        Int                                                                                                // 仅限 190001 下单
-			// FID_GDH    股东号          Char     10
-			// FID_BZ     币种            Char     3
-			// FID_CXBZ   撤销标志        Char     1
-			// FID_DJZJ   冻结资金        Numeric  16,2
-			Json::StreamWriterBuilder json_writer; // 预防多线程
-			m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
-		}
-		catch( ... ) {
-			FormatLibrary::StandardLibrary::FormatTo( log_info, "风控：回报 {0} 取值 异常！", func_id );
-			m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
-		}
-	}
-	if( 190002 == func_id ) {
-		try {
-			char field_value_short[256];
-			Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
-			results_json["ret_func"] = TD_FUNC_RISKS_TRANSACTION_REPORT_STK;
-			results_json["task_id"] = 0;
-			results_json["asset_account"] = asset_account; // 产品账号
-			results_json["account"] = m_username; // 交易账号
-			results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-			results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["trans_id"] = Fix_GetItem( api_session, 522, field_value_short, FIELD_VALUE_SHORT ); // FID_CJBH 成交编号 Char 16
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["symbol"] = Fix_GetItem( api_session, 719, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["security_type"] = Fix_GetItem( api_session, 720, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["exchange"] = Fix_GetItem( api_session, 599, field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-			results_json["fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 本次成交数量 Int
-			results_json["fill_price"] = Fix_GetDouble( api_session, 525 ); // FID_CJJG 本次成交价格 Numeric 9,3
-			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["fill_time"] = Fix_GetItem( api_session, 527, field_value_short, FIELD_VALUE_SHORT ); // FID_CJSJ 成交时间 Char 8
-			results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-			// FID_GDH    股东号          Char     10
-			// FID_BZ     币种            Char     3
-			// FID_CXBZ   撤销标志        Char     1
-			// FID_QSZJ   清算资金        Numeric  16,2
-			// FID_ZCJSL  委托总成交数量  Int
-			// FID_ZCJJE  委托总成交金额  Numeric  16,2
-			// FID_CJJE   本次成交金额    Numeric  16,2
-			Json::StreamWriterBuilder json_writer; // 预防多线程
-			m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
-		}
-		catch( ... ) {
-			FormatLibrary::StandardLibrary::FormatTo( log_info, "风控：回报 {0} 取值 异常！", func_id );
-			m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
-		}
-	}
-	//////////////////// 发送给风控服务端 ////////////////////
-
-	if( nullptr == request ) {
-		FormatLibrary::StandardLibrary::FormatTo( log_info, "回报 {0} 查找 委托请求 失败！{1}", func_id, order_ref );
-		m_trader_ape_p->LogPrint( basicx::syslog_level::c_warn, log_info );
-		return false;
-	}
-
-	GetField::GetFieldFunc get_field_func = it_get_field_func->second;
-	if( !(m_get_field.*get_field_func)( api_session, request, results ) ) {
-		FormatLibrary::StandardLibrary::FormatTo( log_info, "回报 {0} 取值 异常！", func_id );
-		m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
-		return false;
-	}
-
-	if( results != "" ) {
-		m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
-	}
-
-	// 拷贝一份，在回报极其密集时，会不会导致顺序上错乱？也使用消息队列？
-	//std::map<long, long> m_map_sub_endpoint_temp;
-	//m_sub_endpoint_map_lock.lock();
-	//m_map_sub_endpoint_temp = m_map_sub_endpoint;
-	//m_sub_endpoint_map_lock.unlock();
-
-	//for( auto it_se = m_map_sub_endpoint_temp.begin(); it_se != m_map_sub_endpoint_temp.end(); it_se++ ) {
-	//	m_trader_ape_p->CommitResult( 1, it_se->second, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
-	//}
-
-	m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY );
-
-	//FormatLibrary::StandardLibrary::FormatTo( log_info, "回报消息：Connect：{0}, Session：{1}, Subscibe：{2}, Function：{3}", api_connect, api_session, subscibe, func_id );
-	//m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, log_info );
 
 	return true;
 }

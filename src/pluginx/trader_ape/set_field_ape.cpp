@@ -24,24 +24,24 @@
 SetField::SetField() {
 	m_syslog = basicx::SysLog_S::GetInstance();
 
-	m_map_set_field_func[120001] = &SetField::SetField_120001_620001; // 120001_204501
-	m_map_set_field_func[120002] = &SetField::SetField_120002_620021; // 120002_204502
-	m_map_set_field_func[120003] = &SetField::SetField_120003_620002; // 120003_204513
-	m_map_set_field_func[120004] = &SetField::SetField_120004_620022; // 120004_204511
-	// 120005_204545 // 港股通买卖委托
-	// 120006_204546 // 港股通委托撤单
-	m_map_set_field_func[130002] = &SetField::SetField_130002_630002; // 130002_303002
-	m_map_set_field_func[130004] = &SetField::SetField_130004_630004; // 130004_304101
-	m_map_set_field_func[130005] = &SetField::SetField_130005_630005; // 130005_304103
-	m_map_set_field_func[130006] = &SetField::SetField_130006_630006; // 130006_304109
-	m_map_set_field_func[130008] = &SetField::SetField_130008_601410; // 130008_104105
-	m_map_set_field_func[130009] = &SetField::SetField_130009_601411; // 130009_104106
+	m_map_set_field_func[120001] = &SetField::SetField_120001_204501;
+	m_map_set_field_func[120002] = &SetField::SetField_120002_204502;
+	m_map_set_field_func[120003] = &SetField::SetField_120003_204513;
+	m_map_set_field_func[120004] = &SetField::SetField_120004_204511;
+	m_map_set_field_func[120005] = &SetField::SetField_120005_204545;
+	m_map_set_field_func[120006] = &SetField::SetField_120006_204546;
+	m_map_set_field_func[130002] = &SetField::SetField_130002_303002;
+	m_map_set_field_func[130004] = &SetField::SetField_130004_304101;
+	m_map_set_field_func[130005] = &SetField::SetField_130005_304103;
+	m_map_set_field_func[130006] = &SetField::SetField_130006_304109;
+	m_map_set_field_func[130008] = &SetField::SetField_130008_104105;
+	m_map_set_field_func[130009] = &SetField::SetField_130009_104106;
 }
 
 SetField::~SetField() {
 }
 
-bool SetField::SetField_120001_620001( int32_t api_session, Request* request ) { // 单个委托下单
+bool SetField::SetField_120001_204501( int32_t api_session, Request* request ) { // 单个委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -84,7 +84,7 @@ bool SetField::SetField_120001_620001( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120002_620021( int32_t api_session, Request* request ) { // 单个委托撤单
+bool SetField::SetField_120002_204502( int32_t api_session, Request* request ) { // 单个委托撤单
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -100,7 +100,7 @@ bool SetField::SetField_120002_620021( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120003_620002( int32_t api_session, Request* request ) { // 批量委托下单
+bool SetField::SetField_120003_204513( int32_t api_session, Request* request ) { // 批量委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -117,7 +117,7 @@ bool SetField::SetField_120003_620002( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120004_620022( int32_t api_session, Request* request ) { // 批量委托撤单
+bool SetField::SetField_120004_204511( int32_t api_session, Request* request ) { // 批量委托撤单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -133,7 +133,15 @@ bool SetField::SetField_120004_620022( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130002_630002( int32_t api_session, Request* request ) { // 查询客户资金
+bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) { // 港股通买卖委托
+
+}
+
+bool SetField::SetField_120006_204546( int32_t api_session, Request* request ) { // 港股通委托撤单
+
+}
+
+bool SetField::SetField_130002_303002( int32_t api_session, Request* request ) { // 查询客户资金
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -148,7 +156,7 @@ bool SetField::SetField_130002_630002( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130004_630004( int32_t api_session, Request* request ) { // 查询客户持仓
+bool SetField::SetField_130004_304101( int32_t api_session, Request* request ) { // 查询客户持仓
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -168,7 +176,7 @@ bool SetField::SetField_130004_630004( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130005_630005( int32_t api_session, Request* request ) { // 查询客户当日委托
+bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) { // 查询客户当日委托
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -192,7 +200,7 @@ bool SetField::SetField_130005_630005( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130006_630006( int32_t api_session, Request* request ) { // 查询客户当日成交
+bool SetField::SetField_130006_304109( int32_t api_session, Request* request ) { // 查询客户当日成交
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -215,7 +223,7 @@ bool SetField::SetField_130006_630006( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130008_601410( int32_t api_session, Request* request ) { // 查询ETF基本信息
+bool SetField::SetField_130008_104105( int32_t api_session, Request* request ) { // 查询ETF基本信息
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -231,7 +239,7 @@ bool SetField::SetField_130008_601410( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130009_601411( int32_t api_session, Request* request ) { // 查询ETF成分股信息
+bool SetField::SetField_130009_104106( int32_t api_session, Request* request ) { // 查询ETF成分股信息
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {

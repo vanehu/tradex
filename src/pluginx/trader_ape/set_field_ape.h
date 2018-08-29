@@ -33,16 +33,18 @@ public:
 public:
 	typedef bool (SetField::*SetFieldFunc)( int32_t api_session, Request* request );
 
-	bool SetField_120001_620001( int32_t api_session, Request* request ); // 单个委托下单
-	bool SetField_120002_620021( int32_t api_session, Request* request ); // 单个委托撤单
-	bool SetField_120003_620002( int32_t api_session, Request* request ); // 批量委托下单
-	bool SetField_120004_620022( int32_t api_session, Request* request ); // 批量委托撤单
-	bool SetField_130002_630002( int32_t api_session, Request* request ); // 查询客户资金
-	bool SetField_130004_630004( int32_t api_session, Request* request ); // 查询客户持仓
-	bool SetField_130005_630005( int32_t api_session, Request* request ); // 查询客户当日委托
-	bool SetField_130006_630006( int32_t api_session, Request* request ); // 查询客户当日成交
-	bool SetField_130008_601410( int32_t api_session, Request* request ); // 查询ETF基本信息
-	bool SetField_130009_601411( int32_t api_session, Request* request ); // 查询ETF成分股信息
+	bool SetField_120001_204501( int32_t api_session, Request* request ); // 单个委托下单
+	bool SetField_120002_204502( int32_t api_session, Request* request ); // 单个委托撤单
+	bool SetField_120003_204513( int32_t api_session, Request* request ); // 批量委托下单
+	bool SetField_120004_204511( int32_t api_session, Request* request ); // 批量委托撤单
+	bool SetField_120005_204545( int32_t api_session, Request* request ); // 港股通买卖委托
+	bool SetField_120006_204546( int32_t api_session, Request* request ); // 港股通委托撤单
+	bool SetField_130002_303002( int32_t api_session, Request* request ); // 查询客户资金
+	bool SetField_130004_304101( int32_t api_session, Request* request ); // 查询客户持仓
+	bool SetField_130005_304103( int32_t api_session, Request* request ); // 查询客户当日委托
+	bool SetField_130006_304109( int32_t api_session, Request* request ); // 查询客户当日成交
+	bool SetField_130008_104105( int32_t api_session, Request* request ); // 查询ETF基本信息
+	bool SetField_130009_104106( int32_t api_session, Request* request ); // 查询ETF成分股信息
 
 public:
 	basicx::SysLog_S* m_syslog;

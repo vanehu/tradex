@@ -66,7 +66,7 @@ public:
 	std::string OnTradeRequest_Simulate( Request* request, HANDLE_SESSION api_session );
 	Request* GetRequestByOrderRef( int32_t order_ref );
 
-	bool CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe, int32_t func_id );
+	bool CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session, long subscibe );
 
 public:
 	int32_t m_session;
@@ -82,12 +82,8 @@ public:
 	long m_connect; // 连接句柄
 	bool m_connect_ok; // 连接可用
 	bool m_subscibe_ok; // 订阅可用
-	long m_subscibe_cj; // 委托成交订阅句柄
-	long m_subscibe_sb; // 委托申报订阅句柄
-	long m_subscibe_cd; // 委托撤单订阅句柄
-	boost::mutex m_call_back_event_lock_cj;
-	boost::mutex m_call_back_event_lock_sb;
-	boost::mutex m_call_back_event_lock_cd;
+	long m_subscibe_jy; // 委托交易订阅句柄
+	boost::mutex m_call_back_event_lock_jy;
 
 	service_ptr m_service_user;
 	bool m_service_user_running;

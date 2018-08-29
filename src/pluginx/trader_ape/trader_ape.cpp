@@ -612,12 +612,12 @@ std::string TraderAPE_P::OnUserLogin( Request* request ) {
 					return OnErrorResult( TD_FUNC_STOCK_LOGIN, -1, log_info, task_id, request->m_code );
 				}
 
-				Fix_SetString( api_session, 605, username.c_str() ); // 605 FID_KHH 客户号
+				Fix_SetString( api_session, FID_KHH, username.c_str() ); // 客户号
 				char c_password[64] = { 0 };
 				strcpy_s( c_password, 64, password.c_str() );
 				Fix_Encode( c_password );
-				Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-				Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
+				Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+				Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 不指定也可以
 
 				long fid_code = 0;
 				char fid_message[APE_FID_MESSAGE_LENGTH];
@@ -625,8 +625,8 @@ std::string TraderAPE_P::OnUserLogin( Request* request ) {
 
 				if( Fix_Run( api_session ) ) {
 					// 其实这里可能会有多个，可以使用 for( size_t i = 0; i < Fix_GetCount( api_session ); ++i) {} 循环处理
-					fid_code = Fix_GetLong( api_session, 507, 0 );
-					Fix_GetItem( api_session, 508, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
+					fid_code = Fix_GetLong( api_session, FID_CODE, 0 );
+					Fix_GetItem( api_session, FID_MESSAGE, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
 					if( fid_code < 0 ) {
 						delete session; // 新建会话时肯定不在 m_map_session 中
 						Fix_ReleaseSession( api_session );
@@ -735,9 +735,7 @@ std::string TraderAPE_P::OnUserLogout( Request* request ) {
 		session->m_sub_endpoint_map_lock.unlock();
 		if( true == session->m_subscibe_ok ) {
 			session->m_subscibe_ok = false;
-			Fix_UnSubscibeByHandle( session->m_subscibe_cj );
-			Fix_UnSubscibeByHandle( session->m_subscibe_sb );
-			Fix_UnSubscibeByHandle( session->m_subscibe_cd );
+			Fix_UnSubscibeByHandle( session->m_subscibe_jy );
 		}
 		m_session_map_lock.lock();
 		m_map_session.erase( session->m_session );

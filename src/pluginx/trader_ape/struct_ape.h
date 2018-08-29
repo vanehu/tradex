@@ -48,8 +48,8 @@
 
 #include "define_ape.h"
 
+#include "fiddef.h"
 #include "FixApi.h"
-#include "MDBTrade.h"
 
 typedef boost::shared_ptr<boost::thread> thread_ptr;
 typedef boost::shared_ptr<boost::asio::io_service> service_ptr;

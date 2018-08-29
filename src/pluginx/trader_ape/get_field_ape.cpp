@@ -24,21 +24,18 @@
 GetField::GetField() {
 	m_syslog = basicx::SysLog_S::GetInstance();
 
-	m_map_get_field_func[120001] = &GetField::GetField_120001_620001; // 120001_204501
-	m_map_get_field_func[120002] = &GetField::GetField_120002_620021; // 120002_204502
-	m_map_get_field_func[120003] = &GetField::GetField_120003_620002; // 120003_204513
-	m_map_get_field_func[120004] = &GetField::GetField_120004_620022; // 120004_204511
-	// 120005_204545 // 港股通买卖委托
-	// 120006_204546 // 港股通委托撤单
-	m_map_get_field_func[130002] = &GetField::GetField_130002_630002; // 130002_303002
-	m_map_get_field_func[130004] = &GetField::GetField_130004_630004; // 130004_304101
-	m_map_get_field_func[130005] = &GetField::GetField_130005_630005; // 130005_304103
-	m_map_get_field_func[130006] = &GetField::GetField_130006_630006; // 130006_304109
-	m_map_get_field_func[130008] = &GetField::GetField_130008_601410; // 130008_104105
-	m_map_get_field_func[130009] = &GetField::GetField_130009_601411; // 130009_104106
-	m_map_get_field_func[190001] = &GetField::GetField_190001_100065; // 190001_100050 50？
-	m_map_get_field_func[190002] = &GetField::GetField_190002_100064;
-	m_map_get_field_func[190003] = &GetField::GetField_190003_100066;
+	m_map_get_field_func[120001] = &GetField::GetField_120001_204501;
+	m_map_get_field_func[120002] = &GetField::GetField_120002_204502;
+	m_map_get_field_func[120003] = &GetField::GetField_120003_204513;
+	m_map_get_field_func[120004] = &GetField::GetField_120004_204511;
+	m_map_get_field_func[120005] = &GetField::GetField_120005_204545;
+	m_map_get_field_func[120006] = &GetField::GetField_120006_204546;
+	m_map_get_field_func[130002] = &GetField::GetField_130002_303002;
+	m_map_get_field_func[130004] = &GetField::GetField_130004_304101;
+	m_map_get_field_func[130005] = &GetField::GetField_130005_304103;
+	m_map_get_field_func[130006] = &GetField::GetField_130006_304109;
+	m_map_get_field_func[130008] = &GetField::GetField_130008_104105;
+	m_map_get_field_func[130009] = &GetField::GetField_130009_104106;
 }
 
 GetField::~GetField() {
@@ -69,7 +66,7 @@ void GetField::FillHeadQuery( Json::Value& results_json, int32_t ret_func, int32
 	//results_json["ret_data"] = "";
 }
 
-bool GetField::GetField_120001_620001( int32_t api_session, Request* request, std::string& results ) { // 单个委托下单
+bool GetField::GetField_120001_204501( int32_t api_session, Request* request, std::string& results ) { // 单个委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -95,7 +92,7 @@ bool GetField::GetField_120001_620001( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120002_620021( int32_t api_session, Request* request, std::string& results ) { // 单个委托撤单
+bool GetField::GetField_120002_204502( int32_t api_session, Request* request, std::string& results ) { // 单个委托撤单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -120,7 +117,7 @@ bool GetField::GetField_120002_620021( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120003_620002( int32_t api_session, Request* request, std::string& results ) { // 批量委托下单
+bool GetField::GetField_120003_204513( int32_t api_session, Request* request, std::string& results ) { // 批量委托下单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -147,7 +144,7 @@ bool GetField::GetField_120003_620002( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120004_620022( int32_t api_session, Request* request, std::string& results ) { // 批量委托撤单
+bool GetField::GetField_120004_204511( int32_t api_session, Request* request, std::string& results ) { // 批量委托撤单
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -171,7 +168,15 @@ bool GetField::GetField_120004_620022( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130002_630002( int32_t api_session, Request* request, std::string& results ) { // 查询客户资金
+bool GetField::GetField_120005_204545( int32_t api_session, Request* request, std::string& results ) { // 港股通买卖委托
+
+}
+
+bool GetField::GetField_120006_204546( int32_t api_session, Request* request, std::string& results ) { // 港股通委托撤单
+
+}
+
+bool GetField::GetField_130002_303002( int32_t api_session, Request* request, std::string& results ) { // 查询客户资金
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -205,7 +210,7 @@ bool GetField::GetField_130002_630002( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130004_630004( int32_t api_session, Request* request, std::string& results ) { // 查询客户持仓
+bool GetField::GetField_130004_304101( int32_t api_session, Request* request, std::string& results ) { // 查询客户持仓
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -282,7 +287,7 @@ bool GetField::GetField_130004_630004( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130005_630005( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日委托
+bool GetField::GetField_130005_304103( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日委托
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -364,7 +369,7 @@ bool GetField::GetField_130005_630005( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130006_630006( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日成交
+bool GetField::GetField_130006_304109( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日成交
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -419,7 +424,7 @@ bool GetField::GetField_130006_630006( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130008_601410( int32_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息
+bool GetField::GetField_130008_104105( int32_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -466,7 +471,7 @@ bool GetField::GetField_130008_601410( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130009_601411( int32_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息
+bool GetField::GetField_130009_104106( int32_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -495,104 +500,6 @@ bool GetField::GetField_130009_601411( int32_t api_session, Request* request, st
 			results = Json::writeString( m_json_writer, results_json );
 			return true;
 		}
-	}
-	catch( ... ) {
-		return false;
-	}
-	return false;
-}
-
-// 未确认字段：FID_WTLB、FID_ZQLB、FID_CDSL、FID_SBJG // FID_QRBZ、FID_GDH、FID_BZ、FID_DJZJ
-bool GetField::GetField_190001_100065( int32_t api_session, Request* request, std::string& results ) { // 申报回报
-	try {
-		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
-		results_json["ret_func"] = 190001;
-		results_json["task_id"] = request->m_req_json["task_id"].asInt();
-		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_sb, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-		results_json["commit_ret"] = Fix_GetLong( api_session, 753 ); // FID_SBJG 申报结果 Int
-		memset( m_field_value_short_sb, 0, FIELD_VALUE_SHORT );
-		results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, 830, m_field_value_short_sb, FIELD_VALUE_SHORT ) ); // FID_JGSM 结果说明 Char 64
-		// FID_QRBZ   确认标志        Int
-		// FID_GDH    股东号          Char     10
-		// FID_BZ     币种            Char     3
-		// FID_CXBZ   撤销标志        Char     1
-		// FID_DJZJ   冻结资金        Numeric  16,2
-		results = Json::writeString( m_json_writer_sb, results_json );
-		return true;
-	}
-	catch( ... ) {
-		return false;
-	}
-	return false;
-}
-
-// 未确认字段：FID_WTLB、FID_CJBH、FID_ZQLB、FID_CDSL // FID_GDH、FID_BZ、FID_QSZJ、FID_ZCJSL、FID_ZCJJE、FID_CJJE
-bool GetField::GetField_190002_100064( int32_t api_session, Request* request, std::string& results ) { // 成交回报
-	try {
-		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
-		results_json["ret_func"] = 190002;
-		results_json["task_id"] = request->m_req_json["task_id"].asInt();
-		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
-		results_json["trans_id"] = Fix_GetItem( api_session, 522, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_CJBH 成交编号 Char 16
-		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-		results_json["fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 本次成交数量 Int
-		results_json["fill_price"] = Fix_GetDouble( api_session, 525 ); // FID_CJJG 本次成交价格 Numeric 9,3
-		memset( m_field_value_short_cj, 0, FIELD_VALUE_SHORT );
-		results_json["fill_time"] = Fix_GetItem( api_session, 527, m_field_value_short_cj, FIELD_VALUE_SHORT ); // FID_CJSJ 成交时间 Char 8
-		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-		// FID_GDH    股东号          Char     10
-		// FID_BZ     币种            Char     3
-		// FID_CXBZ   撤销标志        Char     1
-		// FID_QSZJ   清算资金        Numeric  16,2
-		// FID_ZCJSL  委托总成交数量  Int
-		// FID_ZCJJE  委托总成交金额  Numeric  16,2
-		// FID_CJJE   本次成交金额    Numeric  16,2
-		results = Json::writeString( m_json_writer_cj, results_json );
-		return true;
-	}
-	catch( ... ) {
-		return false;
-	}
-	return false;
-}
-
-// 未确认字段：FID_WTLB、FID_ZQLB、FID_CDSL // FID_GDH、FID_BZ、FID_DJZJ
-bool GetField::GetField_190003_100066( int32_t api_session, Request* request, std::string& results ) { // 撤单回报
-	try {
-		Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
-		results_json["ret_func"] = 190003;
-		results_json["task_id"] = request->m_req_json["task_id"].asInt();
-		results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-		results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
-		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
-		results_json["symbol"] = Fix_GetItem( api_session, 719, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
-		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
-		results_json["security_type"] = Fix_GetItem( api_session, 720, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
-		memset( m_field_value_short_cd, 0, FIELD_VALUE_SHORT );
-		results_json["exchange"] = Fix_GetItem( api_session, 599, m_field_value_short_cd, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-		results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-		results_json["total_fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 成交数量 Int
-		// FID_GDH    股东号          Char     10
-		// FID_BZ     币种            Char     3
-		// FID_CXBZ   撤销标志        Char     1
-		// FID_DJZJ   冻结资金        Numeric  16,2
-		results = Json::writeString( m_json_writer_cd, results_json );
-		return true;
 	}
 	catch( ... ) {
 		return false;

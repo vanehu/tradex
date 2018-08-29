@@ -1,11 +1,8 @@
 FixApi.dll            -->  APE
-libeay32.dll          -->  APE
-msvcp60.dll           -->  APE
-ssleay32.dll          -->  APE
 thosttraderapi.dll    -->  CTP
 FixApi.dll            -->  VIP
 libeay32.dll          -->  VIP
 msvcp60.dll           -->  VIP
 ssleay32.dll          -->  VIP
 
-注：APE 和 VIP 只有 FixApi.dll 不同，目前暂时不能共存。
+注：APE 和 VIP 的 FixApi.dll 目前不能共存，务必注意区分。
