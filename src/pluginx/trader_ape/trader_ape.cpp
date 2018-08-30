@@ -625,8 +625,8 @@ std::string TraderAPE_P::OnUserLogin( Request* request ) {
 
 				if( Fix_Run( api_session ) ) {
 					// 其实这里可能会有多个，可以使用 for( size_t i = 0; i < Fix_GetCount( api_session ); ++i) {} 循环处理
-					fid_code = Fix_GetLong( api_session, FID_CODE, 0 );
-					Fix_GetItem( api_session, FID_MESSAGE, fid_message, APE_FID_MESSAGE_LENGTH, 0 );
+					fid_code = Fix_GetLong( api_session, FID_CODE, 0 ); // 返回码 Int
+					Fix_GetItem( api_session, FID_MESSAGE, fid_message, APE_FID_MESSAGE_LENGTH, 0 ); // 返回说明 Char 255
 					if( fid_code < 0 ) {
 						delete session; // 新建会话时肯定不在 m_map_session 中
 						Fix_ReleaseSession( api_session );
