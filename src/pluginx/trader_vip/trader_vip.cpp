@@ -613,20 +613,20 @@ std::string TraderVIP_P::OnUserLogin( Request* request ) {
 				return OnErrorResult( TD_FUNC_STOCK_LOGIN, -1, log_info, task_id, request->m_code );
 			}
 
-			Fix_SetString( api_session, 605, username.c_str() ); // 605 FID_KHH 客户号
+			Fix_SetString( api_session, FID_KHH, username.c_str() ); // 客户号
 			char c_password[64] = { 0 };
 			strcpy_s( c_password, 64, password.c_str() );
 			Fix_Encode( c_password );
-			Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-			Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
+			Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+			Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型
 
 			long fid_code = 0;
 			char fid_message[VIP_FID_MESSAGE_LENGTH];
 			memset( &fid_message, 0, VIP_FID_MESSAGE_LENGTH );
 
 			if( Fix_Run( api_session ) ) {
-				fid_code = Fix_GetLong( api_session, 507, 0 );
-				Fix_GetItem( api_session, 508, fid_message, VIP_FID_MESSAGE_LENGTH, 0 );
+				fid_code = Fix_GetLong( api_session, FID_CODE, 0 ); // 返回码 Int
+				Fix_GetItem( api_session, FID_MESSAGE, fid_message, VIP_FID_MESSAGE_LENGTH, 0 ); // 返回说明 Char 255
 				if( fid_code < 0 ) {
 					delete session; // 新建会话时肯定不在 m_map_session 中
 					Fix_ReleaseSession( api_session );

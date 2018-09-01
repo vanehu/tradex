@@ -44,14 +44,14 @@ bool SetField::SetField_120001_620001( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetString( api_session, 571, request->m_req_json["holder"].asCString() ); // FID_GDH 股东号 Char 10
-			Fix_SetString( api_session, 719, request->m_req_json["symbol"].asCString() ); // FID_ZQDM 证券代码 Char 6
+			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10
+			Fix_SetString( api_session, FID_ZQDM, request->m_req_json["symbol"].asCString() ); // 证券代码 Char 6
 			std::string exchange = request->m_req_json["exchange"].asCString();
-			Fix_SetString( api_session, 599, exchange.c_str() ); // FID_JYS 交易所编码 Char 2
-			int32_t entr_type = 0; // 29申购、30赎回、37质入、38质出
-			double price = 0.0; // 29申购、30赎回、37质入、38质出
+			Fix_SetString( api_session, FID_JYS, exchange.c_str() ); // 交易所编码 Char 2
+			int32_t entr_type = 0; // 1 买入、2 卖出、29 申购、30 赎回、37 质入、38 质出
+			double price = 0.0;
 			int32_t exch_side = request->m_req_json["exch_side"].asInt();
-			if( 1 == exch_side || 2 == exch_side ) { // 1买入、2卖出
+			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出
 				entr_type = request->m_req_json["entr_type"].asInt();
 				if( 1 == entr_type ) { // 限价
 					entr_type = 0; // 顶点上证和深证均为 0 限价
@@ -67,10 +67,10 @@ bool SetField::SetField_120001_620001( int32_t api_session, Request* request ) {
 				}
 				price = request->m_req_json["price"].asDouble();
 			}
-			Fix_SetLong( api_session, 1013, entr_type ); // FID_DDLX 订单类型 Int
-			Fix_SetLong( api_session, 683, exch_side ); // FID_WTLB 委托类别 Int
-			Fix_SetDouble( api_session, 682, price ); // FID_WTJG 委托价格 Numric 9,3
-			Fix_SetLong( api_session, 684, request->m_req_json["amount"].asInt() ); // FID_WTSL 委托数量 Int
+			Fix_SetLong( api_session, FID_DDLX, entr_type ); // 订单类型 Int
+			Fix_SetLong( api_session, FID_WTLB, exch_side ); // 委托类别 Int
+			Fix_SetDouble( api_session, FID_WTJG, price ); // 委托价格 Numric 9,3
+			Fix_SetLong( api_session, FID_WTSL, request->m_req_json["amount"].asInt() ); // 委托数量 Int
 			// FID_WTPCH 委托批次号 Int
 			// FID_DFXW 对方席位号 Char 6
 			return true;
@@ -88,7 +88,7 @@ bool SetField::SetField_120002_620021( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 原委托号 Int
+			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 原委托号 Int
 			return true;
 		}
 	}
@@ -103,8 +103,8 @@ bool SetField::SetField_120003_620002( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetLong( api_session, 788, request->m_req_json["order_numb"].asInt() ); // FID_COUNT 委托笔数 Int
-			Fix_SetString( api_session, 922, request->m_req_json["order_list"].asCString() ); // FID_FJXX 委托详细信息 Char 15000
+			Fix_SetLong( api_session, FID_COUNT, request->m_req_json["order_numb"].asInt() ); // 委托笔数 Int
+			Fix_SetString( api_session, FID_FJXX, request->m_req_json["order_list"].asCString() ); // 委托详细信息 Char 15000
 			// FID_WTPCH 委托批次号 Int
 			return true;
 		}
@@ -120,8 +120,8 @@ bool SetField::SetField_120004_620022( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetLong( api_session, 1017, request->m_req_json["batch_id"].asInt() ); // FID_WTPCH 委托批次号 Int
-			Fix_SetString( api_session, 705, request->m_req_json["batch_ht"].asCString() ); // FID_EN_WTH 撤单委托号范围 Char 6000
+			Fix_SetLong( api_session, FID_WTPCH, request->m_req_json["batch_id"].asInt() ); // 委托批次号 Int
+			Fix_SetString( api_session, FID_EN_WTH, request->m_req_json["batch_ht"].asCString() ); // 撤单委托号范围 Char 6000
 			return true;
 		}
 	}
@@ -172,8 +172,8 @@ bool SetField::SetField_130005_630005( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 委托号 Int
-			Fix_SetString( api_session, 763, request->m_req_json["brow_index"].asCString() ); // FID_BROWINDEX 增量查询索引值 Char 128
+			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int
+			Fix_SetString( api_session, FID_BROWINDEX, request->m_req_json["brow_index"].asCString() ); // 增量查询索引值 Char 128
 			// FID_GDH 股东号 Char 10
 			// FID_JYS 交易所编码 Char 2
 			// FID_WTLB 委托类别 Int
@@ -196,8 +196,8 @@ bool SetField::SetField_130006_630006( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetLong( api_session, 681, request->m_req_json["order_id"].asInt() ); // FID_WTH 委托号 Int
-			Fix_SetString( api_session, 763, request->m_req_json["brow_index"].asCString() ); // FID_BROWINDEX 增量查询索引值 Char 128
+			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int
+			Fix_SetString( api_session, FID_BROWINDEX, request->m_req_json["brow_index"].asCString() ); // 增量查询索引值 Char 128
 			// FID_GDH 股东号 Char 10
 			// FID_JYS 交易所编码 Char 2
 			// FID_WTLB 委托类别 Int
@@ -217,7 +217,7 @@ bool SetField::SetField_130008_601410( int32_t api_session, Request* request ) {
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
-			Fix_SetString( api_session, 9129, request->m_req_json["fund_id_2"].asCString() ); // FID_JJDM 基金代码 Char 6
+			Fix_SetString( api_session, FID_JJDM, request->m_req_json["fund_id_2"].asCString() ); // 基金代码 Char 6
 			// FID_JYS 交易所 Char 2
 			// FID_SGDM ETF申赎代码 Char 6
 			return true;
@@ -233,7 +233,7 @@ bool SetField::SetField_130009_601411( int32_t api_session, Request* request ) {
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
-			Fix_SetString( api_session, 9129, request->m_req_json["fund_id_2"].asCString() ); // FID_JJDM 基金代码 Char 6
+			Fix_SetString( api_session, FID_JJDM, request->m_req_json["fund_id_2"].asCString() ); // 基金代码 Char 6
 			// FID_JYS 交易所 Char 2
 			// FID_TYPE 基金类型 Char 2
 			return true;

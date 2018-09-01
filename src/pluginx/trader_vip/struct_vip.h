@@ -48,6 +48,7 @@
 
 #include "define_vip.h"
 
+#include "fiddef.h"
 #include "FixApi.h"
 #include "MDBTrade.h"
 

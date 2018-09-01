@@ -340,13 +340,13 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 	}
 
 	if( 120001 == func_id || 120002 == func_id || 120003 == func_id || 120004 == func_id || 130002 == func_id || 130004 == func_id || 130005 == func_id || 130006 == func_id ) {
-		Fix_SetString( api_session, 605, m_username.c_str() ); // 605 FID_KHH 客户号
+		Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 		char c_password[64] = { 0 };
 		strcpy_s( c_password, 64, m_password.c_str() );
 		Fix_Encode( c_password );
-		Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-		Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
-		Fix_SetString( api_session, 864, m_sys_user_id.c_str() ); // 864 FID_WTGY 委托柜员
+		Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+		Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型
+		Fix_SetString( api_session, FID_WTGY, m_sys_user_id.c_str() ); // 委托柜员
 	}
 	
 	SetField::SetFieldFunc set_field_func = it_set_field_func->second;
@@ -363,7 +363,7 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 			long ret_count = Fix_GetCount( api_session ); // 业务执行出错时 ret_count == 0
 			if( ret_count > 0 ) {
 				for( int32_t i = 0; i < ret_count; i++ ) { // 其实只有一条的
-					int32_t order_ref = Fix_GetLong( api_session, 681, i ); // FID_WTH 委托号 Int
+					int32_t order_ref = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
 					m_order_ref_request_map_lock.lock();
 					m_map_order_ref_request[order_ref] = *request;
 					m_order_ref_request_map_lock.unlock();
@@ -640,12 +640,12 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 		}
 
 		if( 130002 == func_id || 130004 == func_id || 130005 == func_id || 130006 == func_id ) {
-			Fix_SetString( api_session, 605, m_username.c_str() ); // 605 FID_KHH 客户号
+			Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 			char c_password[64] = { 0 };
 			strcpy_s( c_password, 64, m_password.c_str() );
 			Fix_Encode( c_password );
-			Fix_SetString( api_session, 598, c_password ); // 598 FID_JYMM 交易密码
-			Fix_SetString( api_session, 781, "0" ); // 781 FID_JMLX 加密类型
+			Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
+			Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型
 		}
 
 		SetField::SetFieldFunc set_field_func = it_set_field_func->second;
@@ -707,7 +707,7 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 	std::string results = "";
 	std::string asset_account = "";
 
-	int32_t order_ref = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
+	int32_t order_ref = Fix_GetLong( api_session, FID_WTH ); // 委托号 Int
 	Request* request = GetRequestByOrderRef( order_ref );
 	if( request != nullptr ) {
 		asset_account = request->m_req_json["asset_account"].asString();
@@ -722,20 +722,20 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 			results_json["task_id"] = 0;
 			results_json["asset_account"] = asset_account; // 产品账号
 			results_json["account"] = m_username; // 交易账号
-			results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-			results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
+			results_json["order_id"] = Fix_GetLong( api_session, FID_WTH ); // 委托号 Int
+			results_json["exch_side"] = Fix_GetLong( api_session, FID_WTLB ); // 委托类别 Int
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["symbol"] = Fix_GetItem( api_session, 719, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
+			results_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, field_value_short, FIELD_VALUE_SHORT ); // 证券代码 Char 6
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["security_type"] = Fix_GetItem( api_session, 720, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
+			results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT ); // 证券类别 Char 2
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["exchange"] = Fix_GetItem( api_session, 599, field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-			results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
-			results_json["commit_ret"] = Fix_GetLong( api_session, 753 ); // FID_SBJG 申报结果 Int                                           // 仅限 190001 下单
+			results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT ); // 交易所 Char 2
+			results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL ); // 撤单数量 Int
+			results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG ); // 申报结果 Int                                           // 仅限 190001 下单
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, 830, field_value_short, FIELD_VALUE_SHORT ) ); // FID_JGSM 结果说明 Char 64 // 仅限 190001 下单
-			results_json["total_fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 成交数量 Int                                       // 仅限 190003 撤单
-			// FID_QRBZ   确认标志        Int                                                                                                // 仅限 190001 下单
+			results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT ) ); // 结果说明 Char 64 // 仅限 190001 下单
+			results_json["total_fill_qty"] = Fix_GetLong( api_session, FID_CJSL ); // 成交数量 Int                                       // 仅限 190003 撤单
+			// FID_QRBZ   确认标志        Int                                                                                            // 仅限 190001 下单
 			// FID_GDH    股东号          Char     10
 			// FID_BZ     币种            Char     3
 			// FID_CXBZ   撤销标志        Char     1
@@ -756,21 +756,21 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 			results_json["task_id"] = 0;
 			results_json["asset_account"] = asset_account; // 产品账号
 			results_json["account"] = m_username; // 交易账号
-			results_json["order_id"] = Fix_GetLong( api_session, 681 ); // FID_WTH 委托号 Int
-			results_json["exch_side"] = Fix_GetLong( api_session, 683 ); // FID_WTLB 委托类别 Int
+			results_json["order_id"] = Fix_GetLong( api_session, FID_WTH ); // 委托号 Int
+			results_json["exch_side"] = Fix_GetLong( api_session, FID_WTLB ); // 委托类别 Int
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["trans_id"] = Fix_GetItem( api_session, 522, field_value_short, FIELD_VALUE_SHORT ); // FID_CJBH 成交编号 Char 16
+			results_json["trans_id"] = Fix_GetItem( api_session, FID_CJBH, field_value_short, FIELD_VALUE_SHORT ); // 成交编号 Char 16
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["symbol"] = Fix_GetItem( api_session, 719, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQDM 证券代码 Char 6
+			results_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, field_value_short, FIELD_VALUE_SHORT ); // 证券代码 Char 6
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["security_type"] = Fix_GetItem( api_session, 720, field_value_short, FIELD_VALUE_SHORT ); // FID_ZQLB 证券类别 Char 2
+			results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT ); // 证券类别 Char 2
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["exchange"] = Fix_GetItem( api_session, 599, field_value_short, FIELD_VALUE_SHORT ); // FID_JYS 交易所 Char 2
-			results_json["fill_qty"] = Fix_GetLong( api_session, 528 ); // FID_CJSL 本次成交数量 Int
-			results_json["fill_price"] = Fix_GetDouble( api_session, 525 ); // FID_CJJG 本次成交价格 Numeric 9,3
+			results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT ); // 交易所 Char 2
+			results_json["fill_qty"] = Fix_GetLong( api_session, FID_CJSL ); // 本次成交数量 Int
+			results_json["fill_price"] = Fix_GetDouble( api_session, FID_CJJG ); // 本次成交价格 Numeric 9,3
 			memset( field_value_short, 0, FIELD_VALUE_SHORT );
-			results_json["fill_time"] = Fix_GetItem( api_session, 527, field_value_short, FIELD_VALUE_SHORT ); // FID_CJSJ 成交时间 Char 8
-			results_json["cxl_qty"] = Fix_GetLong( api_session, 886 ); // FID_CDSL 撤单数量 Int
+			results_json["fill_time"] = Fix_GetItem( api_session, FID_CJSJ, field_value_short, FIELD_VALUE_SHORT ); // 成交时间 Char 8
+			results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL ); // 撤单数量 Int
 			// FID_GDH    股东号          Char     10
 			// FID_BZ     币种            Char     3
 			// FID_CXBZ   撤销标志        Char     1
