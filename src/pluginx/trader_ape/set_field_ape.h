@@ -42,7 +42,7 @@ public:
 	bool SetField_130002_303002( int32_t api_session, Request* request ); // 查询客户资金
 	bool SetField_130004_304101( int32_t api_session, Request* request ); // 查询客户持仓
 	bool SetField_130005_304103( int32_t api_session, Request* request ); // 查询客户当日委托
-	bool SetField_130006_304109( int32_t api_session, Request* request ); // 查询客户当日成交
+	bool SetField_130006_304110( int32_t api_session, Request* request ); // 查询客户当日成交
 	bool SetField_130008_104105( int32_t api_session, Request* request ); // 查询ETF基本信息
 	bool SetField_130009_104106( int32_t api_session, Request* request ); // 查询ETF成分股信息
 

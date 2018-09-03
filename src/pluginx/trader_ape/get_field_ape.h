@@ -48,7 +48,7 @@ public:
 	bool GetField_130002_303002( int32_t api_session, Request* request, std::string& results ); // 查询客户资金
 	bool GetField_130004_304101( int32_t api_session, Request* request, std::string& results ); // 查询客户持仓
 	bool GetField_130005_304103( int32_t api_session, Request* request, std::string& results ); // 查询客户当日委托
-	bool GetField_130006_304109( int32_t api_session, Request* request, std::string& results ); // 查询客户当日成交
+	bool GetField_130006_304110( int32_t api_session, Request* request, std::string& results ); // 查询客户当日成交
 	bool GetField_130008_104105( int32_t api_session, Request* request, std::string& results ); // 查询ETF基本信息
 	bool GetField_130009_104106( int32_t api_session, Request* request, std::string& results ); // 查询ETF成分股信息
 

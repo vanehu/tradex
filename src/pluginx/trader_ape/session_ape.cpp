@@ -286,7 +286,7 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 		func_type = 304103;
 		break;
 	case 130006: // 查询客户当日成交
-		func_type = 304109;
+		func_type = 304110;
 		break;
 	case 130008: // 查询ETF基本信息
 		func_type = 104105;
@@ -425,7 +425,7 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 		func_type = 304103;
 		break;
 	case 130006: // 查询客户当日成交
-		func_type = 304109;
+		func_type = 304110;
 		break;
 	case 130008: // 查询ETF基本信息
 		func_type = 104105;

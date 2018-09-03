@@ -33,7 +33,7 @@ GetField::GetField() {
 	m_map_get_field_func[130002] = &GetField::GetField_130002_303002;
 	m_map_get_field_func[130004] = &GetField::GetField_130004_304101;
 	m_map_get_field_func[130005] = &GetField::GetField_130005_304103;
-	m_map_get_field_func[130006] = &GetField::GetField_130006_304109;
+	m_map_get_field_func[130006] = &GetField::GetField_130006_304110;
 	m_map_get_field_func[130008] = &GetField::GetField_130008_104105;
 	m_map_get_field_func[130009] = &GetField::GetField_130009_104106;
 }
@@ -66,7 +66,7 @@ void GetField::FillHeadQuery( Json::Value& results_json, int32_t ret_func, int32
 	//results_json["ret_data"] = "";
 }
 
-bool GetField::GetField_120001_204501( int32_t api_session, Request* request, std::string& results ) { // 单个委托下单
+bool GetField::GetField_120001_204501( int32_t api_session, Request* request, std::string& results ) { // 单个委托下单 // 出参同 VIP 接口
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -79,7 +79,6 @@ bool GetField::GetField_120001_204501( int32_t api_session, Request* request, st
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
 				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
-				// FID_WTPCH 委托批次号 Int
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -92,7 +91,7 @@ bool GetField::GetField_120001_204501( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120002_204502( int32_t api_session, Request* request, std::string& results ) { // 单个委托撤单
+bool GetField::GetField_120002_204502( int32_t api_session, Request* request, std::string& results ) { // 单个委托撤单 // 出参比 VIP 接口少了 FID_WTH
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -104,7 +103,8 @@ bool GetField::GetField_120002_204502( int32_t api_session, Request* request, st
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
-				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号(撤单) Int
+//				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号(撤单) Int
+				ret_data_json["order_id"] = 0;
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -117,7 +117,7 @@ bool GetField::GetField_120002_204502( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120003_204513( int32_t api_session, Request* request, std::string& results ) { // 批量委托下单
+bool GetField::GetField_120003_204513( int32_t api_session, Request* request, std::string& results ) { // 批量委托下单 // 出参同 VIP 接口
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -144,7 +144,7 @@ bool GetField::GetField_120003_204513( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120004_204511( int32_t api_session, Request* request, std::string& results ) { // 批量委托撤单
+bool GetField::GetField_120004_204511( int32_t api_session, Request* request, std::string& results ) { // 批量委托撤单 // 出参同 VIP 接口
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -156,6 +156,7 @@ bool GetField::GetField_120004_204511( int32_t api_session, Request* request, st
 				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				// FID_SBBS 1297 N 成功申请撤单的笔数
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -168,9 +169,24 @@ bool GetField::GetField_120004_204511( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120005_204545( int32_t api_session, Request* request, std::string& results ) { // 港股通买卖委托
+bool GetField::GetField_120005_204545( int32_t api_session, Request* request, std::string& results ) { // 港股通买卖委托 // 与 GetField_120005_204545 单个委托下单 一致
 	try {
-		// TODO
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			Json::Value results_json;
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			FillHead( results_json, 120005, ret_numb, request ); // 120005 // FillHead
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			for( ; i < ret_numb; i++ ) {
+				Json::Value ret_data_json;
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
+				results_json["ret_data"].append( ret_data_json );
+			}
+			results = Json::writeString( m_json_writer, results_json );
+			return true;
+		}
 	}
 	catch( ... ) {
 		return false;
@@ -178,9 +194,25 @@ bool GetField::GetField_120005_204545( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_120006_204546( int32_t api_session, Request* request, std::string& results ) { // 港股通委托撤单
+bool GetField::GetField_120006_204546( int32_t api_session, Request* request, std::string& results ) { // 港股通委托撤单 // 与 GetField_120006_204546 单个委托撤单 一致
 	try {
-		// TODO
+		if( NW_MSG_CODE_JSON == request->m_code ) {
+			Json::Value results_json;
+			int32_t ret_numb = Fix_GetCount( api_session ); // 业务执行出错时 ret_numb == 0
+			FillHead( results_json, 120006, ret_numb, request ); // 120006 // FillHead
+			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
+			for( ; i < ret_numb; i++ ) {
+				Json::Value ret_data_json;
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号(撤单) Int
+				ret_data_json["order_id"] = 0;
+				results_json["ret_data"].append( ret_data_json );
+			}
+			results = Json::writeString( m_json_writer, results_json );
+			return true;
+		}
 	}
 	catch( ... ) {
 		return false;
@@ -188,7 +220,7 @@ bool GetField::GetField_120006_204546( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130002_303002( int32_t api_session, Request* request, std::string& results ) { // 查询客户资金
+bool GetField::GetField_130002_303002( int32_t api_session, Request* request, std::string& results ) { // 查询客户资金 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -197,19 +229,27 @@ bool GetField::GetField_130002_303002( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["account"] = Fix_GetItem( api_session, FID_ZJZH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 资金账号 Char 20
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["currency"] = Fix_GetItem( api_session, FID_BZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 币种 Char  3
-				ret_data_json["available"] = Fix_GetDouble( api_session, FID_KYZJ, i ); // 可用资金 Numric 16,2
+				ret_data_json["available"] = Fix_GetDouble( api_session, FID_KYZJ, i ); // 可用资金 Numric 16,2 // FID_EXFLG = 1 时有效
 				ret_data_json["balance"] = Fix_GetDouble( api_session, FID_ZHYE, i ); // 账户余额 Numric 16,2
 				ret_data_json["frozen"] = Fix_GetDouble( api_session, FID_DJJE, i ); // 冻结金额 Numric 16,2
-				// FID_YJLX  预计利息  Numric  16,2
-				// FID_ZHZT  账户状态  Int
-				// FID_JGDM  机构代码  Char    4
+				// FID_ZZHBZ 727 N 主账户标志 // 1 表示主账户
+				// FID_ZHLB 929 N 账户类别 // 1 普通帐户，2 融资融券帐户
+				// FID_ZHZT 710 N 账户状态 // 0 正常，其它为异常
+				// FID_KQZJ 617 R 可取资金 // FID_EXFLG = 1 时有效
+				// FID_OFSS_JZ 2100 R 基金市值 // FID_EXFLG = 1 时有效
+				// FID_ZXSZ 760 R	 证券市值 // FID_EXFLG = 1 时有效
+				// FID_QTZC 1254 R 其它资产 // FID_EXFLG = 1 时有效
+				// FID_ZZC 1255 R 总资产 // FID_EXFLG = 1 时有效
+				// FID_KYZJ2 1656 R 港股可用资金 // FID_EXFLG = 1 时有效
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -222,7 +262,7 @@ bool GetField::GetField_130002_303002( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130004_304101( int32_t api_session, Request* request, std::string& results ) { // 查询客户持仓
+bool GetField::GetField_130004_304101( int32_t api_session, Request* request, std::string& results ) { // 查询客户持仓 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE、FID_ZQLB、FID_DRMCCJJE、FID_DRMRCJJE、FID_SGCJSL、FID_SHCJSL
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -231,9 +271,11 @@ bool GetField::GetField_130004_304101( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["holder"] = Fix_GetItem( api_session, FID_GDH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 股东号 Char 10
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
@@ -242,8 +284,9 @@ bool GetField::GetField_130004_304101( int32_t api_session, Request* request, st
 				ret_data_json["currency"] = Fix_GetItem( api_session, FID_BZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 币种 Char 3
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+				ret_data_json["security_type"] = "A0"; // 待处理
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["security_name"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_ZQMC, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 证券名称 Char 8
 				ret_data_json["security_qty"] = Fix_GetLong( api_session, FID_JCCL, i ); // 今持仓量 Long //不要用证券数量
@@ -253,40 +296,32 @@ bool GetField::GetField_130004_304101( int32_t api_session, Request* request, st
 				ret_data_json["non_tradable"] = Fix_GetLong( api_session, FID_FLTSL, i ); // 非流通数量 Long
 				ret_data_json["frozen_qty"] = Fix_GetLong( api_session, FID_DJSL, i ); // 冻结数量 Long
 				ret_data_json["sell_qty"] = Fix_GetLong( api_session, FID_DRMCCJSL, i ); // 当日卖出成交数量 Long
-				ret_data_json["sell_money"] = Fix_GetDouble( api_session, FID_DRMCCJJE, i ); // 当日卖出成交金额 Numric 16,2
+//				ret_data_json["sell_money"] = Fix_GetDouble( api_session, FID_DRMCCJJE, i ); // 当日卖出成交金额 Numric 16,2
+				ret_data_json["sell_money"] = 0.0;
 				ret_data_json["buy_qty"] = Fix_GetLong( api_session, FID_DRMRCJSL, i ); // 当日买入成交数量 Long
-				ret_data_json["buy_money"] = Fix_GetDouble( api_session, FID_DRMRCJJE, i ); // 当日买入成交金额 Numric 16,2
-				ret_data_json["sub_qty"] = Fix_GetLong( api_session, FID_SGCJSL, i ); // 申购成交数量 Long
-				ret_data_json["red_qty"] = Fix_GetLong( api_session, FID_SHCJSL, i ); // 赎回成交数量 Long
-				// FID_DRMCWTSL  当日卖出委托数量  Long
-				// FID_DRMRWTSL  当日买入委托数量  Long
-				// FID_KCRQ      开仓日期          Int
-				// FID_ZQSL      证券数量          Long
-				// FID_WJSSL     未交收数量        Long
-				// FID_BDRQ      变动日期          Int
-				// FID_MCDXSL    卖出抵消数量      Long
-				// FID_MRDXSL    买入抵消数量      Long
-				// FID_JYDW      交易单位          Int
-				// FID_MCSL      累计卖出数量      Long
-				// FID_MRSL      累计买入数量      Long
-				// FID_PGSL      配股数量          Long
-				// FID_SGSL      申购数量          Long
-				// FID_TBFDYK    摊薄浮动盈亏      Numric  16,2
-				// FID_TBBBJ     摊薄保本价        Numric  9,3
-				// FID_TBCBJ     摊薄成本价        Numric  9,3
-				// FID_CCJJ      持仓均价          Numric  9,3
-				// FID_FDYK      浮动盈亏          Numric  16,2
-				// FID_HLJE      红利金额          Numric  16,2
-				// FID_LJYK      累计盈亏          Numric  16,2
-				// FID_MCJE      卖出金额          Numric  16,2
-				// FID_MRJE      买入金额          Numric  16,2
-				// FID_MRJJ      买入均价          Numric  9,3
-				// FID_PGJE      配股金额          Numric  16,2
-				// FID_ZXSZ      最新市值          Numric  16,2
-				// FID_BBJ       保本价            Numric  9,3
-				// FID_ZXJ       最新价            Numric  9,3
-				// FID_GPSZ      非流通市值        Numric  16,2
-				// FID_LXBJ      利息报价          Numric  16,9
+//				ret_data_json["buy_money"] = Fix_GetDouble( api_session, FID_DRMRCJJE, i ); // 当日买入成交金额 Numric 16,2
+				ret_data_json["buy_money"] = 0.0;
+//				ret_data_json["sub_qty"] = Fix_GetLong( api_session, FID_SGCJSL, i ); // 申购成交数量 Long
+				ret_data_json["sub_qty"] = 0;
+//				ret_data_json["red_qty"] = Fix_GetLong( api_session, FID_SHCJSL, i ); // 赎回成交数量 Long
+				ret_data_json["red_qty"] = 0;
+				// FID_ZQSL 724 N 数量
+				// FID_DRMCWTSL 543 N 当天卖出冻结
+				// FID_WJSSL 758 N 非交收数量
+				// FID_JGSL 1722 N 已交收数量
+				// FID_KCRQ 603 N 开仓日期
+				// FID_ZXSZ 760 R 最新市值 // FID_EXFLG = 1 时有效
+				// FID_JYDW 591 N 数量单位，对债券有效，1 表示张，10 表示手 // FID_EXFLG = 1 时有效
+				// FID_ZXJ 729 R 最新价 // FID_EXFLG = 1 时有效
+				// FID_LXBJ 961 R 利息报价，对债券有效 // FID_EXFLG = 1 时有效
+				// FID_MRJJ 636 R 买入均价 // FID_EXFLG = 1 时有效
+				// FID_CCJJ 1209 R 成本价(卖出不影响成本价的算法)，成本算法一 // FID_EXFLG = 1 时有效
+				// FID_BBJ 1098 R 保本价(考虑了按当前渠道卖出的费用) // FID_EXFLG = 1 时有效
+				// FID_FDYK 761 R 浮动盈亏(市价与保本价的计算结果) // FID_EXFLG = 1 时有效
+				// FID_LJYK 1210 R 累计盈亏(未卖出的浮动盈亏+卖出部分实现的盈亏) // FID_EXFLG = 1 时有效
+				// FID_TBCBJ 671 R 摊薄成本价(卖出要摊薄成本的算法)，成本算法二 // FID_EXFLG = 1 时有效
+				// FID_TBBBJ 748 R 摊薄保本价(考虑了当前渠道卖出的费用) // FID_EXFLG = 1 时有效
+				// FID_TBFDYK 749 R 摊薄浮动盈亏 // FID_EXFLG = 1 时有效
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -299,7 +334,7 @@ bool GetField::GetField_130004_304101( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130005_304103( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日委托
+bool GetField::GetField_130005_304103( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日委托 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE、FID_ZQLB、FID_DJZJ、FID_CJSJ、FID_ZJZH
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -308,9 +343,11 @@ bool GetField::GetField_130005_304103( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["holder"] = Fix_GetItem( api_session, FID_GDH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 股东号 Char 10
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
@@ -319,17 +356,27 @@ bool GetField::GetField_130005_304103( int32_t api_session, Request* request, st
 				ret_data_json["currency"] = Fix_GetItem( api_session, FID_BZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 币种 Char 3
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+				ret_data_json["security_type"] = "A0"; // 待处理
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["security_name"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_ZQMC, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 证券名称 Char 8
 				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
 				int64_t entr_type = Fix_GetLong( api_session, FID_DDLX, i ); // 订单类型 Int
+//				if( 0 == entr_type ) { // 限价
+//					ret_data_json["entr_type"] = 1; // 顶点上证和深证均为 0 限价
+//				}
+//				else if( 1 == entr_type || 104 == entr_type ) { // 市价
+//					ret_data_json["entr_type"] = 2; // 顶点上证为 1 市价，顶点深证为 104 市价
+//				}
+//				else {
+//					return false;
+//				}
 				if( 0 == entr_type ) { // 限价
-					ret_data_json["entr_type"] = 1; // 顶点上证和深证均为 0 限价
+					ret_data_json["entr_type"] = 1; // 0 限价
 				}
-				else if( 1 == entr_type || 104 == entr_type ) { //市价
-					ret_data_json["entr_type"] = 2; // 顶点上证为 1 市价，顶点深证为 104 市价
+				else if( 1 == entr_type || 2 == entr_type ) { // 1 最优五档剩余撤单，2 最优五档剩余转限价
+					ret_data_json["entr_type"] = 2; // 2 市价
 				}
 				else {
 					return false;
@@ -344,7 +391,8 @@ bool GetField::GetField_130005_304103( int32_t api_session, Request* request, st
 				ret_data_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["cxl_flag"] = Fix_GetItem( api_session, FID_CXBZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 撤销标志 Char 1
-				ret_data_json["frozen"] = Fix_GetDouble( api_session, FID_DJZJ, i ); // 冻结资金 Numric 16,2
+//				ret_data_json["frozen"] = Fix_GetDouble( api_session, FID_DJZJ, i ); // 冻结资金 Numric 16,2
+				ret_data_json["frozen"] = 0.0;
 				ret_data_json["settlement"] = Fix_GetDouble( api_session, FID_QSZJ, i ); // 清算资金 Numric 16,2
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["brow_index"] = Fix_GetItem( api_session, FID_BROWINDEX, m_field_value_short, FIELD_VALUE_SHORT, i ); // 增量查询索引值 Char 128
@@ -352,23 +400,19 @@ bool GetField::GetField_130005_304103( int32_t api_session, Request* request, st
 				ret_data_json["report_time"] = Fix_GetItem( api_session, FID_SBSJ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 申报时间 Char 8
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["order_time"] = Fix_GetItem( api_session, FID_WTSJ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 委托时间 Char 8
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["fill_time"] = Fix_GetItem( api_session, FID_CJSJ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 成交时间 Char 8
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["account"] = Fix_GetItem( api_session, FID_ZJZH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 资金账号 Char 20
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["fill_time"] = Fix_GetItem( api_session, FID_CJSJ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 成交时间 Char 8
+				ret_data_json["fill_time"] = "";
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["account"] = Fix_GetItem( api_session, FID_ZJZH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 资金账号 Char 20
+				ret_data_json["account"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["message"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64
-				// FID_BPGDH     报盘股东号      Char  10
-				// FID_WTFS      委托方式        Int
-				// FID_SBWTH     申报委托号      Char  10
-				// FID_WTPCH     委托批次号      Int
-				// FID_ZJDJLSH   资金冻结流水号  Int
-				// FID_ZQDJLSH   证券冻结流水号  Int
-				// FID_SBRQ      委托申报日期    Int
-				// FID_SBJLH     申报记录号      Int
-				// FID_WTRQ      委托日期        Int
-				// FID_ADDR_IP   IP 地址         Char  16
-				// FID_ADDR_MAC  MAC 地址        Char  12
+				// FID_NODE 641 C 委托站点信息
+				// FID_WTPCH 1017 C 批次号
+				// FID_MRSL1 843 N 投票赞成数量
+				// FID_MRSL2 845 N 投票反对数量
+				// FID_MRSL3 847 N 投票弃权数量
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -381,7 +425,7 @@ bool GetField::GetField_130005_304103( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130006_304109( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日成交
+bool GetField::GetField_130006_304110( int32_t api_session, Request* request, std::string& results ) { // 查询客户当日成交 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE、FID_ZQLB、FID_S1、FID_ZJZH
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -390,9 +434,11 @@ bool GetField::GetField_130006_304109( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["holder"] = Fix_GetItem( api_session, FID_GDH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 股东号 Char 10
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
@@ -401,8 +447,9 @@ bool GetField::GetField_130006_304109( int32_t api_session, Request* request, st
 				ret_data_json["currency"] = Fix_GetItem( api_session, FID_BZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 币种 Char 3
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["symbol"] = Fix_GetItem( api_session, FID_ZQDM, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券代码 Char 6
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, m_field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
+				ret_data_json["security_type"] = "A0"; // 待处理
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["security_name"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_ZQMC, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 证券名称 Char 8
 				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
@@ -415,15 +462,15 @@ bool GetField::GetField_130006_304109( int32_t api_session, Request* request, st
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["cxl_flag"] = Fix_GetItem( api_session, FID_CXBZ, m_field_value_short, FIELD_VALUE_SHORT, i ); // 撤销标志 Char 1
 				ret_data_json["settlement"] = Fix_GetDouble( api_session, FID_QSJE, i ); // 清算金额 Numric 16,2
-				ret_data_json["commission"] = Fix_GetDouble( api_session, FID_S1, i ); // 佣金 Numric 16,2
+//				ret_data_json["commission"] = Fix_GetDouble( api_session, FID_S1, i ); // 佣金 Numric 16,2
+				ret_data_json["commission"] = 0.0;
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["brow_index"] = Fix_GetItem( api_session, FID_BROWINDEX, m_field_value_short, FIELD_VALUE_SHORT, i ); // 增量查询索引值 Char 128
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["account"] = Fix_GetItem( api_session, FID_ZJZH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 资金账号 Char 20
-				// FID_HBXH   回报序号    Int
-				// FID_LXBJ   利息报价    Numric  16,9
-				// FID_SBWTH  申报委托号  Char    10
-				// FID_LX     利息        Numric  16,2
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["account"] = Fix_GetItem( api_session, FID_ZJZH, m_field_value_short, FIELD_VALUE_SHORT, i ); // 资金账号 Char 20
+				ret_data_json["account"] = "";
+				// FID_SBWTH 1011 C 申报委托号
+				// FID_CJSJ 527 C 成交时间
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -436,7 +483,7 @@ bool GetField::GetField_130006_304109( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130008_104105( int32_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息
+bool GetField::GetField_130008_104105( int32_t api_session, Request* request, std::string& results ) { // 查询ETF基本信息 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE、FID_LOGICAL、FID_DWJZ
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -445,9 +492,11 @@ bool GetField::GetField_130008_104105( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["fund_name"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JJMC, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // ETF基金名称 Char 8
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
@@ -457,20 +506,16 @@ bool GetField::GetField_130008_104105( int32_t api_session, Request* request, st
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["exchange"] = Fix_GetItem( api_session, FID_JYS, m_field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
 				ret_data_json["count"] = Fix_GetLong( api_session, FID_COUNT, i ); // 股票记录数 Int
-				ret_data_json["status"] = Fix_GetLong( api_session, FID_SGSHZT, i ); // 申赎允许状态 Int
-				ret_data_json["pub_iopv"] = Fix_GetLong( api_session, FID_LOGICAL, i ); // 是否发布IOPV Int
+				ret_data_json["status"] = Fix_GetLong( api_session, FID_SGSHZT, i ); // 申赎允许状态 Int // 0 禁止申赎，1 允许申赎
+//				ret_data_json["pub_iopv"] = Fix_GetLong( api_session, FID_LOGICAL, i ); // 是否发布IOPV Int
+				ret_data_json["pub_iopv"] = 0;
 				ret_data_json["unit"] = Fix_GetLong( api_session, FID_TZDW, i ); // 最小申购赎回单位 Int
 				ret_data_json["cash_ratio"] = Fix_GetDouble( api_session, FID_XJTDBL, i ); // 最大现金替代比例 Numeric 7,5
 				ret_data_json["cash_diff"] = Fix_GetDouble( api_session, FID_XJCE, i ); // T日现金差额 Numeric 11,2
-				ret_data_json["iopv"] = Fix_GetDouble( api_session, FID_DWJZ, i ); // T-1日基金单位净值 Numeric 8,4
+//				ret_data_json["iopv"] = Fix_GetDouble( api_session, FID_DWJZ, i ); // T-1日基金单位净值 Numeric 8,4
+				ret_data_json["iopv"] = 0.0;
 				ret_data_json["trade_iopv"] = Fix_GetDouble( api_session, FID_SGSHDWJZ, i ); // T-1日申赎单位净值 Numeric 12,2
-				// FID_KSRQ    网下现金认购开始日期  Int
-				// FID_RGDM    认购代码              Char 6
-				// FID_RGQRDM  认购确认代码          Char 6
-				// FID_RQ      ETF网上认购日期       Int
-				// FID_XJDM    现金代码(资金代码)    Char 6
-				// FID_JSRQ    网下现金认购结束日期  Int
-				// FID_WJLJ    文件路径              Char 255
+				// FID_RGDM 1394 C 认购代码
 				results_json["ret_data"].append( ret_data_json );
 			}
 			results = Json::writeString( m_json_writer, results_json );
@@ -483,7 +528,7 @@ bool GetField::GetField_130008_104105( int32_t api_session, Request* request, st
 	return false;
 }
 
-bool GetField::GetField_130009_104106( int32_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息
+bool GetField::GetField_130009_104106( int32_t api_session, Request* request, std::string& results ) { // 查询ETF成分股信息 // 出参比 VIP 接口少了 FID_CODE、FID_MESSAGE
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			Json::Value results_json;
@@ -492,9 +537,11 @@ bool GetField::GetField_130009_104106( int32_t api_session, Request* request, st
 			int32_t i = 0; // 查询，业务失败则不取结果数据
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
-				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
-				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+//				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = 0;
+//				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
+//				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
+				ret_data_json["otc_info"] = "";
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["fund_name"] = Fix_GetItem( api_session, FID_JJDM, m_field_value_short, FIELD_VALUE_SHORT, i ); // ETF基金代码 Char 6
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
@@ -504,7 +551,7 @@ bool GetField::GetField_130009_104106( int32_t api_session, Request* request, st
 				ret_data_json["stock_qty"] = Fix_GetLong( api_session, FID_ZQSL, i ); // ETF成份股数量 Int
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["exchange"] = Fix_GetItem( api_session, FID_JYS, m_field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
-				ret_data_json["replace_flag"] = Fix_GetLong( api_session, FID_TDBZ, i ); // 替代标志 Int
+				ret_data_json["replace_flag"] = Fix_GetLong( api_session, FID_TDBZ, i ); // 替代标志 Int // 0 股票，1 可用现金，2 必须现金，3 现金溢价
 				ret_data_json["replace_money"] = Fix_GetDouble( api_session, FID_TDJE, i ); // 替代金额  Numeric 16,2
 				ret_data_json["up_px_ratio"] = Fix_GetDouble( api_session, FID_YJBL, i ); // 溢价比例  Numeric 16,2
 				results_json["ret_data"].append( ret_data_json );
