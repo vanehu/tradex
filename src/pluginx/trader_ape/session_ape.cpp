@@ -315,9 +315,9 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 		Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 		char c_password[64] = { 0 };
 		strcpy_s( c_password, 64, m_password.c_str() );
-		//Fix_Encode( c_password ); // 接口 APE 可能不使用也可以，待验证
+		Fix_Encode( c_password ); // 接口 APE 不使用也可以
 		Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
-		//Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 可能不指定也可以，待验证
+		Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 不指定也可以
 		Fix_SetString( api_session, FID_WTGY, m_sys_user_id.c_str() ); // 委托柜员
 	}
 	
@@ -625,9 +625,9 @@ std::string Session::OnTradeRequest_Simulate( Request* request, HANDLE_SESSION a
 			Fix_SetString( api_session, FID_KHH, m_username.c_str() ); // 客户号
 			char c_password[64] = { 0 };
 			strcpy_s( c_password, 64, m_password.c_str() );
-			//Fix_Encode( c_password ); // 接口 APE 可能不使用也可以，待验证
+			Fix_Encode( c_password ); // 接口 APE 不使用也可以
 			Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
-			//Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 可能不指定也可以，待验证
+			Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 不指定也可以
 		}
 
 		SetField::SetFieldFunc set_field_func = it_set_field_func->second;

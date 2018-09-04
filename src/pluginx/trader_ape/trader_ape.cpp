@@ -132,12 +132,16 @@ bool TraderAPE_P::StartPlugin() {
 			LogPrint( basicx::syslog_level::c_error, log_info );
 			return false;
 		}
+		log_info = "顶点接口 初始化 完成。";
+		LogPrint( basicx::syslog_level::c_info, log_info );
 
 		if( !InitFixInfo() ) {
 			log_info = "顶点柜台 初始化 失败！";
 			LogPrint( basicx::syslog_level::c_error, log_info );
 			return false;
 		}
+		log_info = "顶点柜台 初始化 完成。";
+		LogPrint( basicx::syslog_level::c_info, log_info );
 
 		// TODO：添加更多初始化任务
 
