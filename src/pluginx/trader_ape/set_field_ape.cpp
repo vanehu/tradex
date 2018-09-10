@@ -33,7 +33,7 @@ SetField::SetField() {
 	m_map_set_field_func[130002] = &SetField::SetField_130002_303002;
 	m_map_set_field_func[130004] = &SetField::SetField_130004_304101;
 	m_map_set_field_func[130005] = &SetField::SetField_130005_304103;
-	m_map_set_field_func[130006] = &SetField::SetField_130006_304110;
+	m_map_set_field_func[130006] = &SetField::SetField_130006_304110; // 与 304109 待验证
 	m_map_set_field_func[130008] = &SetField::SetField_130008_104105;
 	m_map_set_field_func[130009] = &SetField::SetField_130009_104106;
 }
@@ -109,8 +109,8 @@ bool SetField::SetField_120002_204502( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 //			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需
-			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需
+//			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需 // 测试：不填即可正常撤单
+//			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需 // 测试：不填即可正常撤单
 			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 原委托号 Int
 			return true;
 		}
@@ -275,13 +275,13 @@ bool SetField::SetField_130004_304101( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) { // 查询客户当日委托 // 入参比 VIP 接口少了 FID_WTH
+bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) { // 查询客户当日委托 // 入参比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 //			// FID_JYMM 交易密码 Char 16 // 已填充
-//			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int
+			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int // 测试：填了也不会过滤
 			Fix_SetString( api_session, FID_BROWINDEX, request->m_req_json["brow_index"].asCString() ); // 增量查询索引值 Char 128
 			// FID_GDH 股东号 Char 10
 			// FID_JYS 交易所编码 Char 2
@@ -301,13 +301,13 @@ bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130006_304110( int32_t api_session, Request* request ) { // 查询客户当日成交 // 入参比 VIP 接口少了 FID_WTH
+bool SetField::SetField_130006_304110( int32_t api_session, Request* request ) { // 查询客户当日成交 // 入参比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 //			// FID_JYMM 交易密码 Char 16 // 已填充
-//			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int
+			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 委托号 Int // 测试：填了也不会过滤
 			Fix_SetString( api_session, FID_BROWINDEX, request->m_req_json["brow_index"].asCString() ); // 增量查询索引值 Char 128
 			// FID_EN_WTH 705 C255 委托号范围，多个委托号可以用逗号分隔 // 必填？
 			// FID_ROWCOUNT 9110 N 查询记录数

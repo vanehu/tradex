@@ -305,7 +305,7 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 	}
 
 	Fix_SetNode( api_session, m_node_info.c_str() ); //
-	int32_t ret = Fix_CreateReq( api_session, func_type );
+	int32_t ret = Fix_CreateReq( api_session, func_type ); // Fix_CreateHead、Fix_CreateReq 都可以
 	if( ret < 0 ) {
 		FormatLibrary::StandardLibrary::FormatTo( log_info, "业务 {0} 创建 Fix_CreateReq 失败！", func_id );
 		return m_trader_ape_p->OnErrorResult( func_id, -1, log_info, task_id, request->m_code );
@@ -318,7 +318,7 @@ std::string Session::OnTradeRequest( Request* request, HANDLE_SESSION api_sessio
 		Fix_Encode( c_password ); // 接口 APE 不使用也可以
 		Fix_SetString( api_session, FID_JYMM, c_password ); // 交易密码
 		Fix_SetString( api_session, FID_JMLX, "0" ); // 加密类型 // 接口 APE 不指定也可以
-		Fix_SetString( api_session, FID_WTGY, m_sys_user_id.c_str() ); // 委托柜员
+//		Fix_SetString( api_session, FID_WTGY, m_sys_user_id.c_str() ); // 委托柜员 // 接口 APE 不能填，不然查不到当日委托
 	}
 	
 	SetField::SetFieldFunc set_field_func = it_set_field_func->second;
@@ -713,15 +713,15 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
-						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
-						results_json["cxl_qty"] = 0;
+						results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+//						results_json["cxl_qty"] = 0;
 						// 0：未申报，1：正在申报，2：已申报未成交，3：非法委托，4：申请资金授权中，
 						// 5：部分成交，6：全部成交，7：部成部撤，8：全部撤单，9：撤单未成，10：等待人工申报
-						//results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
-						results_json["commit_ret"] = 2;
-						//memset( field_value_short, 0, FIELD_VALUE_SHORT );
-						//results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
-						results_json["commit_msg"] = "";
+						results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
+//						results_json["commit_ret"] = 2;
+						memset( field_value_short, 0, FIELD_VALUE_SHORT );
+						results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
+//						results_json["commit_msg"] = "";
 						results = Json::writeString( json_writer, results_json );
 						if( results != "" ) {
 							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
@@ -754,11 +754,12 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
-						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
 						int32_t amount = request->m_req_json["amount"].asInt();
-						int32_t total_fill_qty = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int
-						results_json["cxl_qty"] = amount - total_fill_qty;
-						results_json["total_fill_qty"] = total_fill_qty;
+						results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+						results_json["total_fill_qty"] = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int
+//						int32_t total_fill_qty = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int
+//						results_json["cxl_qty"] = amount - total_fill_qty;
+//						results_json["total_fill_qty"] = total_fill_qty;
 						results = Json::writeString( json_writer, results_json );
 						if( results != "" ) {
 							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
@@ -770,16 +771,16 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						results_json["account"] = m_username; // 交易账号
 						// 0：未申报，1：正在申报，2：已申报未成交，3：非法委托，4：申请资金授权中，
 						// 5：部分成交，6：全部成交，7：部成部撤，8：全部撤单，9：撤单未成，10：等待人工申报
-						//results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
+						results_json["commit_ret"] = Fix_GetLong( api_session, FID_SBJG, i ); // 申报结果 Int // 等待验证 FID_SBJG 确实不存在
 						// 如果已全部成交，则会在撤单时收到撤单失败应答
-						if( total_fill_qty < amount ) {
-							results_json["commit_ret"] = 7; // 部成部撤
-						}
-						else {
-							results_json["commit_ret"] = 8; // 全部撤单
-						}
-						//results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
-						results_json["commit_msg"] = "";
+//						if( total_fill_qty < amount ) {
+//							results_json["commit_ret"] = 7; // 部成部撤
+//						}
+//						else {
+//							results_json["commit_ret"] = 8; // 全部撤单
+//						}
+						results_json["commit_msg"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_JGSM, field_value_short, FIELD_VALUE_SHORT, i ) ); // 结果说明 Char 64 // 等待验证 FID_JGSM 确实不存在
+//						results_json["commit_msg"] = "";
 						m_risker->CommitResult( NW_MSG_CODE_JSON, Json::writeString( json_writer, results_json ) ); // 回报统一用 NW_MSG_CODE_JSON 编码
 						//////////////////// 发送给风控服务端 ////////////////////
 						m_trader_ape_p->LogPrint( basicx::syslog_level::c_debug, results, FILE_LOG_ONLY );
@@ -808,8 +809,8 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						results_json["fill_price"] = Fix_GetDouble( api_session, FID_CJJG, i ); // 本次成交价格 Numeric 9,3
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["fill_time"] = Fix_GetItem( api_session, FID_CJSJ, field_value_short, FIELD_VALUE_SHORT, i ); // 成交时间 Char 8
-						//results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
-						results_json["cxl_qty"] = 0;
+						results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 等待验证 FID_CDSL 确实不存在
+//						results_json["cxl_qty"] = 0;
 						results = Json::writeString( json_writer, results_json );
 						if( results != "" ) {
 							m_trader_ape_p->CommitResult( 1, request->m_identity, NW_MSG_CODE_JSON, results ); // 回报统一用 NW_MSG_CODE_JSON 编码 // Trade：1、Risks：2
