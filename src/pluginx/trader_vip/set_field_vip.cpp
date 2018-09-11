@@ -48,10 +48,10 @@ bool SetField::SetField_120001_620001( int32_t api_session, Request* request ) {
 			Fix_SetString( api_session, FID_ZQDM, request->m_req_json["symbol"].asCString() ); // 证券代码 Char 6
 			std::string exchange = request->m_req_json["exchange"].asCString();
 			Fix_SetString( api_session, FID_JYS, exchange.c_str() ); // 交易所编码 Char 2
-			int32_t entr_type = 0; // 1 买入、2 卖出、29 申购、30 赎回、37 质入、38 质出
+			int32_t entr_type = 0; // 1 限价、2 市价
 			double price = 0.0;
 			int32_t exch_side = request->m_req_json["exch_side"].asInt();
-			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出
+			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出、29 申购、30 赎回、37 质入、38 质出
 				entr_type = request->m_req_json["entr_type"].asInt();
 				if( 1 == entr_type ) { // 限价
 					entr_type = 0; // 顶点上证和深证均为 0 限价

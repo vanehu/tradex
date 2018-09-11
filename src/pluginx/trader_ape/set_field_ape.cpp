@@ -33,7 +33,7 @@ SetField::SetField() {
 	m_map_set_field_func[130002] = &SetField::SetField_130002_303002;
 	m_map_set_field_func[130004] = &SetField::SetField_130004_304101;
 	m_map_set_field_func[130005] = &SetField::SetField_130005_304103;
-	m_map_set_field_func[130006] = &SetField::SetField_130006_304110; // 与 304109 待验证
+	m_map_set_field_func[130006] = &SetField::SetField_130006_304110; // 应使用 304110 而非 304109 后者 security_type、trans_id 无值
 	m_map_set_field_func[130008] = &SetField::SetField_130008_104105;
 	m_map_set_field_func[130009] = &SetField::SetField_130009_104106;
 }
@@ -51,28 +51,19 @@ bool SetField::SetField_120001_204501( int32_t api_session, Request* request ) {
 			Fix_SetString( api_session, FID_ZQDM, request->m_req_json["symbol"].asCString() ); // 证券代码 Char 6
 			std::string exchange = request->m_req_json["exchange"].asCString();
 			Fix_SetString( api_session, FID_JYS, exchange.c_str() ); // 交易所编码 Char 2
-			int32_t entr_type = 0; // 1 买入、2 卖出、29 申购、30 赎回、37 质入、38 质出
+			int32_t entr_type = 0; // 1 限价、2 市价
 			double price = 0.0;
 			int32_t exch_side = request->m_req_json["exch_side"].asInt();
-			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出
+			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出、29 申购、30 赎回、37 质入、38 质出
 				entr_type = request->m_req_json["entr_type"].asInt();
-//				if( 1 == entr_type ) { // 限价
-//					entr_type = 0; // 顶点上证和深证均为 0 限价
-//				}
-//				else if( 2 == entr_type && "SH" == exchange ) { // 市价
-//					entr_type = 1; // 顶点上证为 1 市价
-//				}
-//				else if( 2 == entr_type && "SZ" == exchange ) { // 市价
-//					entr_type = 104; // 顶点深证为 104 市价
-//				}
-//				else {
-//					return false;
-//				}
 				if( 1 == entr_type ) { // 限价
-					entr_type = 0; // 0 限价
+					entr_type = 0; // 顶点上证和深证均为 0 限价
 				}
-				else if( 2 == entr_type ) { // 市价
-					entr_type = 2; // 1 最优五档剩余撤单，2 最优五档剩余转限价
+				else if( 2 == entr_type && "SH" == exchange ) { // 市价
+					entr_type = 1; // 顶点上证为 1 市价
+				}
+				else if( 2 == entr_type && "SZ" == exchange ) { // 市价
+					entr_type = 104; // 顶点深证为 104 市价
 				}
 				else {
 					return false;
@@ -159,7 +150,7 @@ bool SetField::SetField_120004_204511( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) { // 港股通买卖委托 // 除了没有未用的 FID_PDDM、FID_TDBZ 其他与 SetField_120001_204501 单个委托下单 一致
+bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) { // 港股通买卖委托 // FID_DDLX 改用 FID_DDJYXZ 与 SetField_120001_204501 单个委托下单 不同
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -169,38 +160,18 @@ bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) {
 			Fix_SetString( api_session, FID_ZQDM, request->m_req_json["symbol"].asCString() ); // 证券代码 Char 6
 			std::string exchange = request->m_req_json["exchange"].asCString();
 			Fix_SetString( api_session, FID_JYS, exchange.c_str() ); // 交易所编码 Char 2
-			int32_t entr_type = 0; // 1 买入、2 卖出
+			int32_t entr_type = 0; // 1 竞价限价盘、2 增强限价盘、3 零股买卖
 			double price = 0.0;
 			int32_t exch_side = request->m_req_json["exch_side"].asInt();
 			if( 1 == exch_side || 2 == exch_side ) { // 1 买入、2 卖出
 				entr_type = request->m_req_json["entr_type"].asInt();
-//				if( 1 == entr_type ) { // 限价
-//					entr_type = 0; // 顶点上证和深证均为 0 限价
-//				}
-//				else if( 2 == entr_type && "SH" == exchange ) { // 市价
-//					entr_type = 1; // 顶点上证为 1 市价
-//				}
-//				else if( 2 == entr_type && "SZ" == exchange ) { // 市价
-//					entr_type = 104; // 顶点深证为 104 市价
-//				}
-//				else {
-//					return false;
-//				}
-				if( 1 == entr_type ) { // 限价
-					entr_type = 0; // 0 限价
-				}
-				else if( 2 == entr_type ) { // 市价
-					entr_type = 2; // 1 最优五档剩余撤单，2 最优五档剩余转限价
-				}
-				else {
-					return false;
-				}
 				price = request->m_req_json["price"].asDouble();
 			}
-			Fix_SetLong( api_session, FID_DDLX, entr_type ); // 订单类型 Int
+			Fix_SetLong( api_session, FID_DDJYXZ, entr_type ); // 订单交易指令限制 Int
 			Fix_SetLong( api_session, FID_JYLB, exch_side ); // 交易类别 Int
 			Fix_SetDouble( api_session, FID_WTJG, price ); // 委托价格 Numric 9,3
 			Fix_SetLong( api_session, FID_WTSL, request->m_req_json["amount"].asInt() ); // 委托数量 Int
+			//FID_DDLX 1013 N 订单类型
 			// FID_DDYXRQ 1536 N 订单有效日期
 			// FID_HGRQ 1251 N 报价回购日期
 			// FID_CJBH 522 C12 成交编号
@@ -208,7 +179,6 @@ bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) {
 			// FID_DFXW 1935 C6 对方席位
 			// FID_DFGDH 1936 C10 对方股东号
 			// FID_WTPCH 1017 N 委托批次号
-			// FID_DDJYXZ 1538 N 订单交易指令限制
 			// FID_DDSXXZ 1537 N 订单时效限制
 			return true;
 		}
@@ -225,8 +195,8 @@ bool SetField::SetField_120006_204546( int32_t api_session, Request* request ) {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 //			// FID_JYMM 交易密码 Char 16 // 已填充
-			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需
-			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需
+//			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需 // 测试：不填即可正常撤单
+//			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需 // 测试：不填即可正常撤单
 			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 原委托号 Int
 			return true;
 		}

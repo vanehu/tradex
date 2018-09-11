@@ -76,7 +76,7 @@ bool GetField::GetField_120001_620001( int32_t api_session, Request* request, st
 			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int // 在风控 CheckTradeResultForRisk() 中检查
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
 				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号 Int
@@ -102,7 +102,7 @@ bool GetField::GetField_120002_620021( int32_t api_session, Request* request, st
 			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int // 在风控 CheckTradeResultForRisk() 中检查
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
 				ret_data_json["order_id"] = Fix_GetLong( api_session, FID_WTH, i ); // 委托号(撤单) Int
@@ -127,7 +127,7 @@ bool GetField::GetField_120003_620002( int32_t api_session, Request* request, st
 			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int // 在风控 CheckTradeResultForRisk() 中检查
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
 				ret_data_json["batch_id"] = Fix_GetLong( api_session, FID_WTPCH, i ); // 委托批次号 Int
@@ -154,7 +154,7 @@ bool GetField::GetField_120004_620022( int32_t api_session, Request* request, st
 			int32_t i = ret_numb == 0 ? -1 : 0; // 交易，业务失败则取第一行
 			for( ; i < ret_numb; i++ ) {
 				Json::Value ret_data_json;
-				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int
+				ret_data_json["otc_code"] = Fix_GetLong( api_session, FID_CODE, i ); // 返回码 Int // 在风控 CheckTradeResultForRisk() 中检查
 				memset( m_field_value_short, 0, FIELD_VALUE_SHORT );
 				ret_data_json["otc_info"] = basicx::StringToUTF8( Fix_GetItem( api_session, FID_MESSAGE, m_field_value_short, FIELD_VALUE_SHORT, i ) ); // 返回说明 Char 255
 				results_json["ret_data"].append( ret_data_json );
