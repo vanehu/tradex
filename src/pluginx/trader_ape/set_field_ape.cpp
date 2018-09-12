@@ -94,7 +94,7 @@ bool SetField::SetField_120001_204501( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120002_204502( int32_t api_session, Request* request ) { // 单个委托撤单 // 入参比 VIP 接口多了 FID_GDH、FID_JYS
+bool SetField::SetField_120002_204502( int32_t api_session, Request* request ) { // 单个委托撤单 // 入参相比 VIP 接口多了 FID_GDH、FID_JYS
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -131,7 +131,7 @@ bool SetField::SetField_120003_204513( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120004_204511( int32_t api_session, Request* request ) { // 批量委托撤单 // 入参比 VIP 接口少了 FID_EN_WTH
+bool SetField::SetField_120004_204511( int32_t api_session, Request* request ) { // 批量委托撤单 // 入参相比 VIP 接口少了 FID_EN_WTH
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -150,7 +150,7 @@ bool SetField::SetField_120004_204511( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) { // 港股通买卖委托 // FID_DDLX 改用 FID_DDJYXZ 与 SetField_120001_204501 单个委托下单 不同
+bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) { // 港股通买卖委托 // 入参相比 VIP 接口 FID_DDLX 改用 FID_DDJYXZ
 	try {
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
@@ -171,7 +171,7 @@ bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) {
 			Fix_SetLong( api_session, FID_JYLB, exch_side ); // 交易类别 Int
 			Fix_SetDouble( api_session, FID_WTJG, price ); // 委托价格 Numric 9,3
 			Fix_SetLong( api_session, FID_WTSL, request->m_req_json["amount"].asInt() ); // 委托数量 Int
-			//FID_DDLX 1013 N 订单类型
+			// FID_DDLX 1013 N 订单类型
 			// FID_DDYXRQ 1536 N 订单有效日期
 			// FID_HGRQ 1251 N 报价回购日期
 			// FID_CJBH 522 C12 成交编号
@@ -189,14 +189,14 @@ bool SetField::SetField_120005_204545( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_120006_204546( int32_t api_session, Request* request ) { // 港股通委托撤单 // 与 SetField_120002_204502 单个委托撤单 一致
+bool SetField::SetField_120006_204546( int32_t api_session, Request* request ) { // 港股通委托撤单 // 入参相比 VIP 接口多了 FID_GDH、FID_JYS
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
 			// FID_KHH 客户号 Char 20 // 已填充
 //			// FID_JYMM 交易密码 Char 16 // 已填充
-//			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需 // 测试：不填即可正常撤单
-//			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需 // 测试：不填即可正常撤单
+			Fix_SetString( api_session, FID_GDH, request->m_req_json["holder"].asCString() ); // 股东号 Char 10 // 接口 VIP 不需 // 测试：不填会报输入参数有误
+			Fix_SetString( api_session, FID_JYS, request->m_req_json["exchange"].asCString() ); // 交易所编码 Char 2 // 接口 VIP 不需 // 测试：不填会报输入参数有误
 			Fix_SetLong( api_session, FID_WTH, request->m_req_json["order_id"].asInt() ); // 原委托号 Int
 			return true;
 		}
@@ -245,7 +245,7 @@ bool SetField::SetField_130004_304101( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) { // 查询客户当日委托 // 入参比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
+bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) { // 查询客户当日委托 // 入参相比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {
@@ -271,7 +271,7 @@ bool SetField::SetField_130005_304103( int32_t api_session, Request* request ) {
 	return false;
 }
 
-bool SetField::SetField_130006_304110( int32_t api_session, Request* request ) { // 查询客户当日成交 // 入参比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
+bool SetField::SetField_130006_304110( int32_t api_session, Request* request ) { // 查询客户当日成交 // 入参相比 VIP 接口少了 FID_WTH // 无法通过填写 order_id 由柜台过滤
 	try {
 		std::string field_value = "";
 		if( NW_MSG_CODE_JSON == request->m_code ) {

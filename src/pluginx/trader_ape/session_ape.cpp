@@ -713,7 +713,7 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
-						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2 // "SH"，"SZ"，"HK"
 //						results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 测试：0
 						results_json["cxl_qty"] = 0;
 						// 0：未申报，1：正在申报，2：已申报未成交，3：非法委托，4：申请资金授权中，
@@ -754,7 +754,7 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
-						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2 // "SH"，"SZ"，"HK"
 //						results_json["cxl_qty"] = Fix_GetLong( api_session, FID_CDSL, i ); // 撤单数量 Int // 测试：0
 //						results_json["total_fill_qty"] = Fix_GetLong( api_session, FID_CJSL, i ); // 成交数量 Int // 全部撤单则为 -amount
 						int32_t amount = request->m_req_json["amount"].asInt();
@@ -805,7 +805,7 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
 						results_json["security_type"] = Fix_GetItem( api_session, FID_ZQLB, field_value_short, FIELD_VALUE_SHORT, i ); // 证券类别 Char 2
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
-						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2
+						results_json["exchange"] = Fix_GetItem( api_session, FID_JYS, field_value_short, FIELD_VALUE_SHORT, i ); // 交易所 Char 2 // "SH"，"SZ"，"HK"
 						results_json["fill_qty"] = Fix_GetLong( api_session, FID_CJSL, i ); // 本次成交数量 Int
 						results_json["fill_price"] = Fix_GetDouble( api_session, FID_CJJG, i ); // 本次成交价格 Numeric 9,3
 						memset( field_value_short, 0, FIELD_VALUE_SHORT );
