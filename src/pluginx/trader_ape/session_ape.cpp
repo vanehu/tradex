@@ -791,7 +791,7 @@ bool Session::CallBackEvent( HANDLE_CONN api_connect, HANDLE_SESSION api_session
 						m_trader_ape_p->LogPrint( basicx::syslog_level::c_error, log_info );
 					}
 				}
-				else if( "O" == fid_cxbz && "1" == fid_ywlb && fid_cjsl > 0 ) { // 成交回报
+				else if( "O" == fid_cxbz && ( "1" == fid_ywlb || "2" == fid_ywlb ) && fid_cjsl > 0 ) { // 成交回报
 					try {
 						Json::Value results_json; // 回报统一用 NW_MSG_CODE_JSON 编码
 						results_json["ret_func"] = 190002;
